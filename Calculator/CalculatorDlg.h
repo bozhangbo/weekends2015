@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Calc.h"
 
 // CCalculatorDlg dialog
 class CCalculatorDlg : public CDialogEx
@@ -29,6 +30,8 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+	bool ProcessChar(TCHAR ch);
+
 public:
 	afx_msg void OnBnClickedButtonZero();
 	afx_msg void OnBnClickedButtonDot();
@@ -48,22 +51,6 @@ public:
 	afx_msg void OnBnClickedButtonDivide();
 	afx_msg void OnBnClickedButtonClear();
 
-	enum State
-	{
-		StateOperandExpectSign,
-		StateOperandExpectDot,
-		StateOperandAfterDot,
-		StateExpectOperator,
-		StateAfterEqual,
-	} _state;
-
-	bool ProcessChar(TCHAR ch);
-	double Calc();
-
-	double _operand1;
-	double _operand2;
-	double _result;
-
 	CString _output;
-	char _operator;
+	CCalc _calculator;
 };
