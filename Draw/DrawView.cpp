@@ -72,16 +72,132 @@ void CDrawView::OnDraw(CDC* pDC)
 	if (!pDoc)
 		return;
 
+	Graphics my_graphics(pDC->m_hDC);
+//	Draw1(my_graphics);
+	Draw2(my_graphics);
+}
+
+void CDrawView::Draw1(Graphics& graphics)
+{
 	CRect client_rect;
 	GetClientRect(client_rect);
 
-	Graphics my_graphics(pDC->m_hDC);
-	Pen pen(Color::Red);
+	std::vector<double> time(1000);
 
-	my_graphics.DrawLine(&pen, 0, 0, client_rect.right, client_rect.bottom);
-	my_graphics.DrawLine(&pen, 0, client_rect.bottom, client_rect.right, client_rect.top);
+	for (unsigned int i = 0; i < 1000; i++)
+	{
+		time[i] = 0.01 * i;
+	}
+
+	auto m = GenerateData(100, 2, 2, time);
+	auto real_part = GetReal(m);
+	auto image_part = GetImage(m);
+
+	auto x_coodinates = CoordinateTransform(0, 10.0, 0, client_rect.Width(), time);
+	auto y_coodinates = CoordinateTransform(-100.0, 100.0, client_rect.Height() / 2, 0, real_part);
+	auto y_coodinate_imaginary = CoordinateTransform(-100.0, 100.0,
+		client_rect.Height(), client_rect.Height() / 2, image_part);
+
+	DrawLines(graphics, x_coodinates, y_coodinates);
+	DrawLines(graphics, x_coodinates, y_coodinate_imaginary);
 }
 
+void CDrawView::Draw2(Graphics& graphics)
+{
+	CRect client_rect;
+	GetClientRect(client_rect);
+
+	std::vector<double> time(1000);
+
+	for (unsigned int i = 0; i < 1000; i++)
+	{
+		time[i] = 0.01 * i;
+	}
+
+	auto m = GenerateData(100, 1, 2, time);
+	auto real_part = GetReal(m);
+	auto image_part = GetImage(m);
+
+	auto x_coodinates = CoordinateTransform(-100, 100, 0, client_rect.Width(), real_part);
+	auto y_coodinates = CoordinateTransform(-100.0, 100.0, client_rect.Height(), 0, image_part);
+
+	DrawLines(graphics, x_coodinates, y_coodinates);
+}
+
+std::vector<std::complex<double>> CDrawView::GenerateData(double m0,
+	double t2,
+	double freq,
+	const std::vector<double>& time)
+{
+	const double PI = 3.1415926535897932384626433832795;
+
+	std::vector<std::complex<double>> output;
+	output.resize(time.size());
+
+	std::complex<double> I(0, 1);
+
+	for (unsigned int i = 0; i < time.size(); ++i)
+	{
+		output[i] = m0 * exp(-time[i] / t2) * exp(I * 2.0 * PI * freq * time[i]);
+	}
+
+	return output;
+}
+
+std::vector<double> CDrawView::GetReal(const std::vector<std::complex<double>>& source)
+{
+	std::vector<double> output(source.size());
+	for (unsigned int i = 0; i < source.size(); ++i)
+	{
+		output[i] = source[i].real();
+	}
+
+	return output;
+}
+
+std::vector<double> CDrawView::GetImage(const std::vector<std::complex<double>>& source)
+{
+	std::vector<double> output(source.size());
+	for (unsigned int i = 0; i < source.size(); ++i)
+	{
+		output[i] = source[i].imag();
+	}
+
+	return output;
+}
+
+std::vector<double> CDrawView::CoordinateTransform(double source_min,
+	double source_max,
+	double dest_min,
+	double dest_max,
+	const std::vector<double>& source)
+{
+	std::vector<double> output(source.size());
+
+	double a = (dest_max - dest_min) / (source_max - source_min);
+	double b = -source_min * a + dest_min;
+
+	for (unsigned int i = 0; i < source.size(); ++i)
+	{
+		output[i] = a * source[i] + b;
+	}
+
+	return output;
+}
+
+void CDrawView::DrawLines(Gdiplus::Graphics& graphics,
+	const std::vector<double>& x,
+	const std::vector<double>& y)
+{
+	ASSERT(x.size() == y.size());
+
+	Pen pen(Color::Red);
+
+	for (unsigned int i = 0; i < x.size() - 1; ++i)
+	{
+		graphics.DrawLine(&pen, static_cast<float>(x[i]), y[i], x[i + 1], y[i + 1]);
+	}
+}
 
 
 // CDrawView printing

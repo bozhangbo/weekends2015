@@ -13,7 +13,8 @@
 //
 
 #pragma once
-
+#include <vector>
+#include <complex>
 
 class CDrawView : public CView
 {
@@ -46,8 +47,16 @@ public:
 #endif
 
 protected:
+	std::vector<std::complex<double>> GenerateData(double m0, double t2, double freq, const std::vector<double>& time );
+	std::vector<double> GetReal(const std::vector<std::complex<double>>& source);
+	std::vector<double> GetImage(const std::vector<std::complex<double>>& source);
+	std::vector<double> CoordinateTransform(double source_min, double source_max, double dest_min, double dest_max,
+		const std::vector<double>& source);
+	void DrawLines(Gdiplus::Graphics& graphics, const std::vector<double>& x, const std::vector<double>& y);
+	void Draw1(Gdiplus::Graphics& graphics);
+	void Draw2(Gdiplus::Graphics& graphics);
 
-// Generated message map functions
+	// Generated message map functions
 protected:
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
