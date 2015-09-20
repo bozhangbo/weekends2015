@@ -46,6 +46,7 @@ public:
 	afx_msg void OnAppAbout();
 	DECLARE_MESSAGE_MAP()
 
+protected:
 	ULONG_PTR _gdiplus_token;
 };
 
