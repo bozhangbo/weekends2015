@@ -107,6 +107,12 @@ void CDrawView::Draw2(Graphics& graphics)
 	CRect client_rect;
 	GetClientRect(client_rect);
 
+	// ×ö»­²¼
+	Bitmap bitmap(client_rect.Width(), client_rect.Height(), &graphics);
+	Gdiplus::Graphics buffer_graphics(&bitmap);
+	SolidBrush BKbrush(Color::White);
+	buffer_graphics.FillRectangle(&BKbrush, 0, 0, client_rect.Width(), client_rect.Height());
+
 	std::vector<double> time(1000);
 
 	for (unsigned int i = 0; i < 1000; i++)
@@ -121,7 +127,9 @@ void CDrawView::Draw2(Graphics& graphics)
 	auto x_coodinates = CoordinateTransform(-100, 100, 0, client_rect.Width(), real_part);
 	auto y_coodinates = CoordinateTransform(-100.0, 100.0, client_rect.Height(), 0, image_part);
 
-	DrawLines(graphics, x_coodinates, y_coodinates);
+	DrawLines(buffer_graphics, x_coodinates, y_coodinates);
+
+	graphics.DrawImage(&bitmap, client_rect.left, client_rect.top, client_rect.right, client_rect.bottom);
 }
 
 std::vector<std::complex<double>> CDrawView::GenerateData(double m0,
