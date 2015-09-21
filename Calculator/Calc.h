@@ -16,6 +16,7 @@ public:
 	} _state;
 
 	CString ProcessChar(TCHAR ch);
+	CString GetOpposite();
 	double Calc();
 
 	double _operand1;

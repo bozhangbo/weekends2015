@@ -129,6 +129,20 @@ CString CCalc::ProcessChar(TCHAR ch)
 	return _output;
 }
 
+CString CCalc::GetOpposite()
+{
+	if (_output.GetAt(0) == _T('-'))
+	{
+		_output.Delete(0, 1);
+	}
+	else
+	{
+		_output = _T('-') + _output;
+	}
+
+	return _output;
+}
+
 double CCalc::Calc()
 {
 	switch (_operator)
