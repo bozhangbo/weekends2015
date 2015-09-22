@@ -82,6 +82,7 @@ BEGIN_MESSAGE_MAP(CCalculatorDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_MULTIPLY, &CCalculatorDlg::OnBnClickedButtonMultiply)
 	ON_BN_CLICKED(IDC_BUTTON_DIVIDE, &CCalculatorDlg::OnBnClickedButtonDivide)
 	ON_BN_CLICKED(IDC_BUTTON_CLEAR, &CCalculatorDlg::OnBnClickedButtonClear)
+	ON_BN_CLICKED(IDC_BUTTON_OPPOSITE, &CCalculatorDlg::OnBnClickedButtonOpposite)
 END_MESSAGE_MAP()
 
 
@@ -278,4 +279,11 @@ bool CCalculatorDlg::ProcessChar(TCHAR ch)
 	UpdateData(FALSE);
 
 	return true;
+}
+
+
+void CCalculatorDlg::OnBnClickedButtonOpposite()
+{
+	_output = _calculator.GetOpposite();
+	UpdateData(FALSE);
 }

@@ -53,4 +53,5 @@ public:
 
 	CString _output;
 	CCalc _calculator;
+	afx_msg void OnBnClickedButtonOpposite();
 };
