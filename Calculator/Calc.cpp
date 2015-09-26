@@ -46,7 +46,14 @@ CString CCalc::ProcessChar(TCHAR ch)
 	case StateOperandExpectDot:
 		if (ch >= _T('0') && ch <= _T('9'))
 		{
-			_output += ch;
+			if (_output == _T('0') && ch == _T('0'))
+			{
+				_output = ch;
+			}
+			else
+			{
+				_output += ch;
+			}
 		}
 		else if (ch == _T('.'))
 		{
@@ -98,9 +105,10 @@ CString CCalc::ProcessChar(TCHAR ch)
 	case StateAfterEqual:
 		if (ch >= _T('0') && ch <= _T('9'))
 		{
+			_output = _T("0");
 			_operand1 = 0;
 			_operator = _T('+');
-			_state = StateOperandExpectDot;
+			_state = StateOperandExpectSign;
 			return ProcessChar(ch);
 		}
 		else if (ch == _T('+') || ch == _T('-') || ch == _T('*') || ch == _T('/'))
@@ -116,6 +124,20 @@ CString CCalc::ProcessChar(TCHAR ch)
 	default:
 		ASSERT(0);
 		return _T("");
+	}
+
+	return _output;
+}
+
+CString CCalc::GetOpposite()
+{
+	if (_output.GetAt(0) == _T('-'))
+	{
+		_output.Delete(0, 1);
+	}
+	else
+	{
+		_output = _T('-') + _output;
 	}
 
 	return _output;
