@@ -73,8 +73,8 @@ void CDrawView::OnDraw(CDC* pDC)
 		return;
 
 	Graphics my_graphics(pDC->m_hDC);
-//	Draw1(my_graphics);
-	Draw2(my_graphics);
+	Draw1(my_graphics);
+//	Draw2(my_graphics);
 }
 
 void CDrawView::Draw1(Graphics& graphics)
@@ -92,14 +92,18 @@ void CDrawView::Draw1(Graphics& graphics)
 	auto m = GenerateData(100, 2, 2, time);
 	auto real_part = GetReal(m);
 	auto image_part = GetImage(m);
+	auto amplitude = GetAmplitude(m);
 
 	auto x_coodinates = CoordinateTransform(0, 10.0, 0, client_rect.Width(), time);
 	auto y_coodinates = CoordinateTransform(-100.0, 100.0, client_rect.Height() / 2, 0, real_part);
-	auto y_coodinate_imaginary = CoordinateTransform(-100.0, 100.0,
-		client_rect.Height(), client_rect.Height() / 2, image_part);
+//	auto y_coodinate_imaginary = CoordinateTransform(-100.0, 100.0,
+//		client_rect.Height(), client_rect.Height() / 2, image_part);
+	auto y_coodinate_amplitude = CoordinateTransform(0, 100.0, client_rect.Height(), client_rect.Height() / 2, amplitude);
 
 	DrawLines(graphics, x_coodinates, y_coodinates);
-	DrawLines(graphics, x_coodinates, y_coodinate_imaginary);
+	DrawLines(graphics, x_coodinates, y_coodinate_amplitude);
+
+//	DrawLines(graphics, x_coodinates, y_coodinate_imaginary);
 }
 
 void CDrawView::Draw2(Graphics& graphics)
@@ -169,6 +173,17 @@ std::vector<double> CDrawView::GetImage(const std::vector<std::complex<double>>&
 	for (unsigned int i = 0; i < source.size(); ++i)
 	{
 		output[i] = source[i].imag();
+	}
+
+	return output;
+}
+
+std::vector<double> CDrawView::GetAmplitude(const std::vector<std::complex<double>>& source)
+{
+	std::vector<double> output(source.size());
+	for (unsigned int i = 0; i < source.size(); ++i)
+	{
+		output[i] = sqrt(source[i].imag() * source[i].imag() + source[i].real() * source[i].real());
 	}
 
 	return output;
