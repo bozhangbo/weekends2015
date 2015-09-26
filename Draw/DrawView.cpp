@@ -23,6 +23,8 @@
 #include "DrawView.h"
 
 #include <gdiplus.h>
+#include "MrSimulator.h"
+#include "DataGenerator.h"
 using namespace Gdiplus;
 
 #ifdef _DEBUG
@@ -79,23 +81,24 @@ void CDrawView::OnDraw(CDC* pDC)
 
 void CDrawView::Draw1(Graphics& graphics)
 {
+	CDrawDoc* doc = GetDocument();
+	ASSERT_VALID(doc);
+	if (!doc)
+		return;
+
 	CRect client_rect;
 	GetClientRect(client_rect);
 
-	std::vector<double> time(1000);
+	auto time = doc->GetTimeSeries();
+	auto m = doc->GetData();
 
-	for (unsigned int i = 0; i < 1000; i++)
-	{
-		time[i] = 0.01 * i;
-	}
-
-	auto m = GenerateData(100, 2, 2, time);
 	auto real_part = GetReal(m);
 	auto image_part = GetImage(m);
 	auto amplitude = GetAmplitude(m);
 
 	auto x_coodinates = CoordinateTransform(0, 10.0, 0, client_rect.Width(), time);
 	auto y_coodinates = CoordinateTransform(-100.0, 100.0, client_rect.Height() / 2, 0, real_part);
+
 //	auto y_coodinate_imaginary = CoordinateTransform(-100.0, 100.0,
 //		client_rect.Height(), client_rect.Height() / 2, image_part);
 	auto y_coodinate_amplitude = CoordinateTransform(0, 100.0, client_rect.Height(), client_rect.Height() / 2, amplitude);
@@ -124,7 +127,12 @@ void CDrawView::Draw2(Graphics& graphics)
 		time[i] = 0.01 * i;
 	}
 
-	auto m = GenerateData(100, 1, 2, time);
+	CMrSimulator simulator;
+	simulator.AddComponent(100, 1, 2);
+	simulator.AddComponent(50, 3, 3);
+
+	auto m = simulator.GenerateData(time);
+
 	auto real_part = GetReal(m);
 	auto image_part = GetImage(m);
 
@@ -134,26 +142,6 @@ void CDrawView::Draw2(Graphics& graphics)
 	DrawLines(buffer_graphics, x_coodinates, y_coodinates);
 
 	graphics.DrawImage(&bitmap, client_rect.left, client_rect.top, client_rect.right, client_rect.bottom);
-}
-
-std::vector<std::complex<double>> CDrawView::GenerateData(double m0,
-	double t2,
-	double freq,
-	const std::vector<double>& time)
-{
-	const double PI = 3.1415926535897932384626433832795;
-
-	std::vector<std::complex<double>> output;
-	output.resize(time.size());
-
-	std::complex<double> I(0, 1);
-
-	for (unsigned int i = 0; i < time.size(); ++i)
-	{
-		output[i] = m0 * exp(-time[i] / t2) * exp(I * 2.0 * PI * freq * time[i]);
-	}
-
-	return output;
 }
 
 std::vector<double> CDrawView::GetReal(const std::vector<std::complex<double>>& source)
