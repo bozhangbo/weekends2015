@@ -59,6 +59,10 @@ protected:
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+
+	std::vector<double> CoordinateTransform(double source_min, double source_max, 
+		double dest_min, double dest_max, const std::vector<double> & source);
+
 	DECLARE_MESSAGE_MAP()
 };
 

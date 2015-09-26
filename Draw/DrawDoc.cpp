@@ -153,8 +153,8 @@ std::vector<double> CDrawDoc::GetTimeSeries()
 std::vector<std::complex<double>> CDrawDoc::GetData()
 {
 	CMrSimulator simulator;
-	simulator.AddComponent(100, 1, 2);
-	simulator.AddComponent(50, 3, 3);
+	simulator.AddExponentialComponent(100, 1, 2);
+	simulator.AddGaussianComponent(50, 3, 3);
 	auto time = GetTimeSeries();
 
 	return simulator.GenerateData(time);

@@ -1,14 +1,13 @@
 #pragma once
 #include <vector>
-class CoordinateTransformer
+
+class CCoordinateTransformer
 {
 public:
-	CoordinateTransformer();
-	~CoordinateTransformer();
-	static std::vector<double> CoordinateTransform(double source_min,
-		double source_max,
-		double dest_min,
-		double dest_max,
-		const std::vector<double>& source);
+	CCoordinateTransformer(double source_min, double source_max, double dest_min, double dest_max);
+	double Transform(double source);
+
+	double _a;
+	double _b;
 };
 

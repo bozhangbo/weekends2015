@@ -97,12 +97,14 @@ void CDrawView::Draw1(Graphics& graphics)
 	auto image_part = GetImage(m);
 	auto amplitude = GetAmplitude(m);
 
-	auto x_coodinates = CoordinateTransformer::CoordinateTransform(0, 10.0, 0, client_rect.Width(), time);
-	auto y_coodinates = CoordinateTransformer::CoordinateTransform(-100.0, 100.0, client_rect.Height() / 2, 0, real_part);
+	CCoordinateTransformer transformer(0, 10.0, 0, client_rect.Width());
+	
+	auto x_coodinates = CoordinateTransform(0, 10.0, 0, client_rect.Width(), time);
+	auto y_coodinates = CoordinateTransform(-100.0, 100.0, client_rect.Height() / 2, 0, real_part);
 
 //	auto y_coodinate_imaginary = CoordinateTransform(-100.0, 100.0,
 //		client_rect.Height(), client_rect.Height() / 2, image_part);
-	auto y_coodinate_amplitude = CoordinateTransformer::CoordinateTransform(0, 100.0, client_rect.Height(), client_rect.Height() / 2, amplitude);
+	auto y_coodinate_amplitude = CoordinateTransform(0, 100.0, client_rect.Height(), client_rect.Height() / 2, amplitude);
 
 	DrawLines(graphics, x_coodinates, y_coodinates);
 	DrawLines(graphics, x_coodinates, y_coodinate_amplitude);
@@ -129,20 +131,34 @@ void CDrawView::Draw2(Graphics& graphics)
 	}
 
 	CMrSimulator simulator;
-	simulator.AddComponent(100, 1, 2);
-	simulator.AddComponent(50, 3, 3);
+	simulator.AddExponentialComponent(100, 1, 2);
+	simulator.AddExponentialComponent(50, 3, 3);
 
 	auto m = simulator.GenerateData(time);
 
 	auto real_part = GetReal(m);
 	auto image_part = GetImage(m);
 
-	auto x_coodinates = CoordinateTransformer::CoordinateTransform(-100, 100, 0, client_rect.Width(), real_part);
-	auto y_coodinates = CoordinateTransformer::CoordinateTransform(-100.0, 100.0, client_rect.Height(), 0, image_part);
+	auto x_coodinates = CoordinateTransform(-100, 100, 0, client_rect.Width(), real_part);
+	auto y_coodinates = CoordinateTransform(-100.0, 100.0, client_rect.Height(), 0, image_part);
 
 	DrawLines(buffer_graphics, x_coodinates, y_coodinates);
 
 	graphics.DrawImage(&bitmap, client_rect.left, client_rect.top, client_rect.right, client_rect.bottom);
+}
+
+std::vector<double> CDrawView::CoordinateTransform(double source_min, double source_max,
+	double dest_min, double dest_max, const std::vector<double> & source)
+{
+	CCoordinateTransformer transformer(source_min, source_max, dest_min, dest_max);
+	
+	std::vector<double> output(source.size());
+	for (unsigned int i = 0; i < source.size(); ++i)
+	{
+		output[i] = transformer.Transform(source[i]);
+	}
+
+	return output;
 }
 
 std::vector<double> CDrawView::GetReal(const std::vector<std::complex<double>>& source)
