@@ -66,6 +66,9 @@
     <ClInclude Include="CoordinateTransformer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PlotWnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Draw.cpp">
@@ -108,6 +111,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CoordinateTransformer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlotWnd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
