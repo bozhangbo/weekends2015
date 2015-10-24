@@ -2,11 +2,13 @@
 
 #include <vector>
 #include <memory>
+#include <map>
 // CPlotWnd
 
 class CDataSeries
 {
 public:
+	CDataSeries();
 	bool SetData(const std::vector<double>& x, const std::vector<double>& y);
 	const std::vector<double>& GetX() const;
 	const std::vector<double>& GetY() const;
@@ -17,10 +19,14 @@ public:
 	void SetColor(Gdiplus::Color color);
 	Gdiplus::Color GetColor() const;
 
+	void Show(bool show);
+	bool IsVisible() const;
+
 private:
 	std::vector<double> _x;
 	std::vector<double> _y;
 	Gdiplus::Color _color;
+	bool _visible;
 };
 
 class CPlotWnd : public CWnd
@@ -31,7 +37,8 @@ public:
 	CPlotWnd();
 	virtual ~CPlotWnd();
 
-	bool AddData(const std::vector<double>& x, const std::vector<double>& y, Gdiplus::Color color);
+	bool AddData(const CString& name, const std::vector<double>& x, const std::vector<double>& y, Gdiplus::Color color);
+	bool Show(const CString& name, bool show);
 protected:
 	DECLARE_MESSAGE_MAP()
 
@@ -48,7 +55,7 @@ protected:
 		const std::vector<double>& y,
 		Gdiplus::Color color);
 
-	std::vector<std::shared_ptr<CDataSeries>> _data_series;
+	std::map<CString, std::shared_ptr<CDataSeries>> _data_series;
 };
 
 

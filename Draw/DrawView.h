@@ -61,6 +61,10 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 	CPlotWnd _plot_window;
+	bool _show_real;
+	bool _show_imaginary;
+	bool _show_magnitude;
+
 public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
@@ -70,6 +74,8 @@ public:
 	afx_msg void OnUpdateCheckMagnitude(CCmdUI *pCmdUI);
 	afx_msg void OnCheckReal();
 	afx_msg void OnUpdateCheckReal(CCmdUI *pCmdUI);
+
+
 };
 
 #ifndef _DEBUG  // debug version in DrawView.cpp

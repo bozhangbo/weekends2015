@@ -67,10 +67,13 @@ void CPlotWnd::OnPaint()
 
 	for (auto iter = _data_series.begin(); iter != _data_series.end(); ++iter)
 	{
-		auto x_coodinates = CoordinateTransform(x_range.first, x_range.second, 0, rect.Width(), (*iter)->GetX());
-		auto y_coodinates = CoordinateTransform(y_range.first, y_range.second, rect.Height(), 0, (*iter)->GetY());
+		if (iter->second->IsVisible())
+		{
+			auto x_coodinates = CoordinateTransform(x_range.first, x_range.second, 0, rect.Width(), iter->second->GetX());
+			auto y_coodinates = CoordinateTransform(y_range.first, y_range.second, rect.Height(), 0, iter->second->GetY());
 
-		DrawLines(buffer_graphics, x_coodinates, y_coodinates, (*iter)->GetColor());
+			DrawLines(buffer_graphics, x_coodinates, y_coodinates, iter->second->GetColor());
+		}
 	}
 
 	graphics.DrawImage(&bitmap, rect.left, rect.top, rect.right, rect.bottom);
@@ -83,11 +86,11 @@ pair<double, double> CPlotWnd::GetXRange()
 
 
 	auto iter = _data_series.begin();
-	pair<double, double> min_max = (*iter)->GetMinMaxX();
+	pair<double, double> min_max = iter->second->GetMinMaxX();
 	++iter;
 	for (; iter != _data_series.end(); ++iter)
 	{
-		pair<double, double> series_min_max = (*iter)->GetMinMaxX();
+		pair<double, double> series_min_max = iter->second->GetMinMaxX();
 		if (series_min_max.first < min_max.first)
 		{
 			min_max.first = series_min_max.first;
@@ -108,11 +111,11 @@ pair<double, double> CPlotWnd::GetYRange()
 
 
 	auto iter = _data_series.begin();
-	pair<double, double> min_max = (*iter)->GetMinMaxY();
+	pair<double, double> min_max = iter->second->GetMinMaxY();
 	++iter;
 	for (; iter != _data_series.end(); ++iter)
 	{
-		pair<double, double> series_min_max = (*iter)->GetMinMaxY();
+		pair<double, double> series_min_max = iter->second->GetMinMaxY();
 		if (series_min_max.first < min_max.first)
 		{
 			min_max.first = series_min_max.first;
@@ -142,7 +145,10 @@ void CPlotWnd::DrawLines(Gdiplus::Graphics& graphics,
 	}
 }
 
-bool CPlotWnd::AddData(const std::vector<double>& x, const std::vector<double>& y, Color color)
+bool CPlotWnd::AddData(const CString& name, 
+	const std::vector<double>& x, 
+	const std::vector<double>& y, 
+	Color color)
 {
 	if (x.size() != y.size())
 		return false;
@@ -151,10 +157,34 @@ bool CPlotWnd::AddData(const std::vector<double>& x, const std::vector<double>& 
 	series->SetData(x, y);
 	series->SetColor(color);
 
-	_data_series.push_back(series);
+	_data_series.insert(make_pair(name, series));
 
 	return true;
 }
+
+bool CPlotWnd::Show(const CString& name, bool show)
+{
+	auto iter = _data_series.find(name);
+	if (iter == _data_series.end())
+	{
+		return false;
+	}
+
+	iter->second->Show(show);
+
+	Invalidate(FALSE);
+	UpdateWindow();
+
+	return true;
+}
+
+CDataSeries::CDataSeries() :
+	_visible(true),
+	_color(Color::Black)
+{
+
+}
+
 
 bool CDataSeries::SetData(const std::vector<double>& x, const std::vector<double>& y)
 {
@@ -205,4 +235,14 @@ const std::vector<double>& CDataSeries::GetX() const
 const std::vector<double>& CDataSeries::GetY() const
 {
 	return _y;
+}
+
+void CDataSeries::Show(bool show)
+{
+	_visible = show;
+}
+
+bool CDataSeries::IsVisible() const
+{
+	return _visible;
 }

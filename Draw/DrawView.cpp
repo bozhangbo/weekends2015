@@ -54,10 +54,11 @@ END_MESSAGE_MAP()
 
 // CDrawView construction/destruction
 
-CDrawView::CDrawView()
+CDrawView::CDrawView() :
+	_show_real(true),
+	_show_imaginary(true),
+	_show_magnitude(true)
 {
-	// TODO: add construction code here
-
 }
 
 CDrawView::~CDrawView()
@@ -193,9 +194,10 @@ int CDrawView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	auto imaginary_part = GetImage(m);
 	auto amplitude = GetAmplitude(m);
 
-	_plot_window.AddData(time, real_part, Color::Red);
-	_plot_window.AddData(time, imaginary_part, Color::Blue);
-	_plot_window.AddData(time, amplitude, Color::Green);
+	_plot_window.AddData(_T("Real"), time, real_part, Color::Red);
+
+	_plot_window.AddData(_T("Imaginary"), time, imaginary_part, Color::Blue);
+	_plot_window.AddData(_T("Magnitude"), time, amplitude, Color::Green);
 
 	return 0;
 }
@@ -220,35 +222,38 @@ void CDrawView::OnSize(UINT nType, int cx, int cy)
 
 void CDrawView::OnCheckImaginary()
 {
-	// TODO: Add your command handler code here
+	_show_imaginary = !_show_imaginary;
+	_plot_window.Show(_T("Imaginary"), _show_imaginary);
 }
 
 
 void CDrawView::OnUpdateCheckImaginary(CCmdUI *pCmdUI)
 {
-	// TODO: Add your command update UI handler code here
+	pCmdUI->SetCheck(_show_imaginary ? 1 : 0);
 }
 
 
 void CDrawView::OnCheckMagnitude()
 {
-	// TODO: Add your command handler code here
+	_show_magnitude = !_show_magnitude;
+	_plot_window.Show(_T("Magnitude"), _show_magnitude);
 }
 
 
 void CDrawView::OnUpdateCheckMagnitude(CCmdUI *pCmdUI)
 {
-	// TODO: Add your command update UI handler code here
+	pCmdUI->SetCheck(_show_magnitude ? 1 : 0);
 }
 
 
 void CDrawView::OnCheckReal()
 {
-	// TODO: Add your command handler code here
+	_show_real = !_show_real;
+	_plot_window.Show(_T("Real"), _show_real);
 }
 
 
 void CDrawView::OnUpdateCheckReal(CCmdUI *pCmdUI)
 {
-	// TODO: Add your command update UI handler code here
+	pCmdUI->SetCheck(_show_real ? 1 : 0);
 }
