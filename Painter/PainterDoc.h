@@ -15,7 +15,9 @@
 #include <vector>
 #include <memory>
 
+
 class CLine;
+class CRectangle;
 
 class CPainterDoc : public CDocument
 {
@@ -42,7 +44,9 @@ public:
 public:
 	virtual ~CPainterDoc();
 	const std::vector<std::shared_ptr<CLine>>& GetLines() const;
+	const std::vector<std::shared_ptr<CRectangle>>& GetRectangle() const;
 	void AddLine(std::shared_ptr<CLine> line);
+	void AddRectangle(std::shared_ptr<CRectangle> rectangle);
 
 #ifdef _DEBUG
 	virtual void AssertValid() const;
@@ -62,4 +66,5 @@ protected:
 
 private:
 	std::vector<std::shared_ptr<CLine>> _lines;
+	std::vector<std::shared_ptr<CRectangle>> _rectangles;
 };

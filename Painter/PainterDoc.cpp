@@ -177,6 +177,16 @@ void CPainterDoc::AddLine(shared_ptr<CLine> line)
 	_lines.push_back(line);
 }
 
+const std::vector<std::shared_ptr<CRectangle>>& CPainterDoc::GetRectangle() const
+{
+	return _rectangles;
+}
+
+void CPainterDoc::AddRectangle(std::shared_ptr<CRectangle> rectangle)
+{
+	_rectangles.push_back(rectangle);
+}
+
 
 #endif //_DEBUG
 

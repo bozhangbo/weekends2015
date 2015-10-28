@@ -17,7 +17,13 @@
 #include <vector>
 #include <memory>
 
-#include "Line.h"
+#include "Line.h"  //这个放在头文件中是否合适？
+
+enum PaintingType
+{
+	Line,
+	PaintingRectangle
+};
 
 class CPainterView : public CView
 {
@@ -65,7 +71,14 @@ public:
 
 private:
  	std::shared_ptr<CLine> _temp_line;
+	std::shared_ptr<CRectangle> _temp_rectanle;
+	PaintingType _paintingtype;
 
+public:
+	afx_msg void OnRectangle();
+	afx_msg void OnUpdateRectangle(CCmdUI *pCmdUI);
+	afx_msg void OnLine();
+	afx_msg void OnUpdateLine(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // debug version in PainterView.cpp

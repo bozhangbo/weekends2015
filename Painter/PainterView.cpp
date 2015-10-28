@@ -23,6 +23,8 @@
 #include "PainterView.h"
 #include <Gdiplus.h>
 
+#include "Rectangle.h"
+
 using namespace std;
 using namespace Gdiplus;
 
@@ -46,12 +48,17 @@ BEGIN_MESSAGE_MAP(CPainterView, CView)
 	ON_WM_LBUTTONUP()
 //	ON_WM_MOVE()
 	ON_WM_MOUSEMOVE()
+	ON_COMMAND(ID_RECTANGLE, &CPainterView::OnRectangle)
+	ON_UPDATE_COMMAND_UI(ID_RECTANGLE, &CPainterView::OnUpdateRectangle)
+	ON_COMMAND(ID_LINE, &CPainterView::OnLine)
+	ON_UPDATE_COMMAND_UI(ID_LINE, &CPainterView::OnUpdateLine)
 END_MESSAGE_MAP()
 
 // CPainterView construction/destruction
 
 CPainterView::CPainterView()
 {
+	_paintingtype = Line;
 	// TODO: add construction code here
 
 }
@@ -97,17 +104,43 @@ void CPainterView::Draw(Gdiplus::Graphics& graphics)
 	SolidBrush BKbrush(Gdiplus::Color::White);
 	graphics.FillRectangle(&BKbrush, 0, 0, rect.Width(), rect.Height());
 
-	auto& lines = doc->GetLines();
-
-	Pen pen(Color::Red);
-	for (auto iter = lines.begin(); iter != lines.end(); ++iter)
+	switch (_paintingtype)
 	{
-		(*iter)->Draw(graphics);
+	case Line:
+	{
+
+				 auto& lines = doc->GetLines();
+
+				 Pen pen(Color::Red);
+				 for (auto iter = lines.begin(); iter != lines.end(); ++iter)
+				 {
+					 (*iter)->Draw(graphics);
+				 }
+
+				 if (_temp_line)
+				 {
+					 _temp_line->Draw(graphics);
+				 }
+				 break;
 	}
-
-	if (_temp_line)
+	case PaintingRectangle:
 	{
-		_temp_line->Draw(graphics);
+							  auto& rectangles = doc->GetRectangle();
+							  Pen pen(Color::Green);
+							  for (auto iter = rectangles.begin(); iter != rectangles.end(); ++iter)
+							  {
+								  (*iter)->Draw(graphics);
+							  }
+							  if (_temp_rectanle)
+							  {
+								  _temp_rectanle->Draw(graphics);
+
+							  }
+							  //graphics.DrawRectangle(&pen, 10,10,100,100);
+							  break;
+	}
+	default:
+		break;
 	}
 }
 
@@ -178,10 +211,25 @@ CPainterDoc* CPainterView::GetDocument() const // non-debug version is inline
 
 void CPainterView::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	_temp_line = shared_ptr<CLine>(new CLine);
+	switch (_paintingtype)
+	{
+	case Line:
+		_temp_line = shared_ptr<CLine>(new CLine);
 
-	_temp_line->SetPoint1(Point(point.x, point.y));
-	_temp_line->SetPoint2(Point(point.x, point.y));
+		_temp_line->SetPoint1(Point(point.x, point.y));
+		_temp_line->SetPoint2(Point(point.x, point.y));
+
+		break;
+	case PaintingRectangle:
+		_temp_rectanle = shared_ptr<CRectangle>(new CRectangle);
+
+		_temp_rectanle->SetPoint1(Point(point.x, point.y));
+		_temp_rectanle->SetPoint2(Point(point.x, point.y));
+
+		break;
+	default:
+		break;
+	}
 
 	Invalidate(FALSE);
 	UpdateWindow();
@@ -195,12 +243,25 @@ void CPainterView::OnLButtonUp(UINT nFlags, CPoint point)
 	auto doc = GetDocument();
 	if (doc == nullptr)
 		return;
-
-	if (_temp_line)
-	{
-		doc->AddLine(_temp_line);
-		_temp_line.reset();
+	switch (_paintingtype)
+	{case Line:
+		if (_temp_line)
+		{
+			doc->AddLine(_temp_line);
+			_temp_line.reset();
+		}
+		break;
+	case PaintingRectangle:
+		if (_temp_rectanle)
+		{
+		doc->AddRectangle(_temp_rectanle);
+		_temp_rectanle.reset();
+		}
+		break;
+	default:
+		break;
 	}
+	
 
 	CView::OnLButtonUp(nFlags, point);
 }
@@ -208,12 +269,51 @@ void CPainterView::OnLButtonUp(UINT nFlags, CPoint point)
 
 void CPainterView::OnMouseMove(UINT nFlags, CPoint point)
 {
-	if ((nFlags & MK_LBUTTON) == MK_LBUTTON && _temp_line)
+	if ((nFlags & MK_LBUTTON) == MK_LBUTTON && (_temp_line||_temp_rectanle))
 	{
-		_temp_line->SetPoint2(Point(point.x, point.y));
+		switch (_paintingtype)
+		{
+		case Line:		
+			_temp_line->SetPoint2(Point(point.x, point.y)); 
+			break;
+		case PaintingRectangle:
+			_temp_rectanle->SetPoint2(Point(point.x, point.y)); 
+			break;
+		default:
+			break;
+		}
+
 	}
 	Invalidate(FALSE);
 	UpdateWindow();
 
 	CView::OnMouseMove(nFlags, point);
+}
+
+
+void CPainterView::OnRectangle()
+{
+	_paintingtype = PaintingRectangle;
+	// TODO: Add your command handler code here
+}
+
+
+void CPainterView::OnUpdateRectangle(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck((_paintingtype==PaintingRectangle) ? 1 : 0);
+	// TODO: Add your command update UI handler code here
+}
+
+
+void CPainterView::OnLine()
+{
+	_paintingtype = Line;
+	// TODO: Add your command handler code here
+}
+
+
+void CPainterView::OnUpdateLine(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(_paintingtype == Line ? 1 : 0);
+	// TODO: Add your command update UI handler code here
 }
