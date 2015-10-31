@@ -103,12 +103,11 @@ void CPainterView::Draw(Gdiplus::Graphics& graphics)
 	SolidBrush BKbrush(Gdiplus::Color::White);
 	graphics.FillRectangle(&BKbrush, 0, 0, rect.Width(), rect.Height());
 
-	auto& lines = doc->GetShapes();
+	auto& shapes = doc->GetShapes();
 
-	Pen pen(Color::Red);
-	for (auto iter = lines.begin(); iter != lines.end(); ++iter)
+	for (auto shape = shapes.begin(); shape != shapes.end(); ++shape)
 	{
-		(*iter)->Draw(graphics);
+		(*shape)->Draw(graphics);
 	}
 
 	if (_temp_line)
@@ -118,6 +117,7 @@ void CPainterView::Draw(Gdiplus::Graphics& graphics)
 	if (_temp_rect)
 	{
 		_temp_rect->Draw(graphics);
+
 	}
 }
 
@@ -198,7 +198,6 @@ void CPainterView::OnLButtonDown(UINT nFlags, CPoint point)
 		_temp_rect = shared_ptr<CRectangle>(new CRectangle(point.x, point.y, 0, 0));
 	}
 
-
 	Invalidate(FALSE);
 	UpdateWindow();
 
@@ -216,9 +215,8 @@ void CPainterView::OnLButtonUp(UINT nFlags, CPoint point)
 	{
 		doc->AddShape(_temp_line);
 		_temp_line.reset();
-	}
-
-	if (_temp_rect)
+	} 
+	else if (_temp_rect)
 	{
 		doc->AddShape(_temp_rect);
 		_temp_rect.reset();
@@ -246,24 +244,20 @@ void CPainterView::OnMouseMove(UINT nFlags, CPoint point)
 	CView::OnMouseMove(nFlags, point);
 }
 
-
 void CPainterView::OnButtonLine()
 {
 	_tool = ToolTypeLine;
 }
-
 
 void CPainterView::OnUpdateButtonLine(CCmdUI *pCmdUI)
 {
 	pCmdUI->SetCheck(_tool == ToolTypeLine);
 }
 
-
 void CPainterView::OnButtonRectangle()
 {
 	_tool = ToolTypeRectangle;
 }
-
 
 void CPainterView::OnUpdateButtonRectangle(CCmdUI *pCmdUI)
 {

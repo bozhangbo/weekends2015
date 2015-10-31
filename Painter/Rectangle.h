@@ -1,5 +1,4 @@
 #pragma once
-
 #include <gdiplus.h>
 #include "Shape.h"
 
@@ -49,4 +48,5 @@ private:
 	Gdiplus::Point _top_left;
 	Gdiplus::Size _size;
 };
+
 

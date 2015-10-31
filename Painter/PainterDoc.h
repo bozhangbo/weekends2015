@@ -16,6 +16,8 @@
 #include <memory>
 
 class CShape;
+class CLine;
+class CRectangle;
 
 class CPainterDoc : public CDocument
 {
