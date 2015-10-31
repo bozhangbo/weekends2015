@@ -15,7 +15,7 @@
 #include <vector>
 #include <memory>
 
-class CLine;
+class CShape;
 
 class CPainterDoc : public CDocument
 {
@@ -41,8 +41,8 @@ public:
 // Implementation
 public:
 	virtual ~CPainterDoc();
-	const std::vector<std::shared_ptr<CLine>>& GetLines() const;
-	void AddLine(std::shared_ptr<CLine> line);
+	const std::vector<std::shared_ptr<CShape>>& GetShapes() const;
+	void AddShape(std::shared_ptr<CShape> shape);
 
 #ifdef _DEBUG
 	virtual void AssertValid() const;
@@ -61,5 +61,5 @@ protected:
 #endif // SHARED_HANDLERS
 
 private:
-	std::vector<std::shared_ptr<CLine>> _lines;
+	std::vector<std::shared_ptr<CShape>> _shapes;
 };

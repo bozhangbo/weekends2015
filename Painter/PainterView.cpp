@@ -23,6 +23,9 @@
 #include "PainterView.h"
 #include <Gdiplus.h>
 
+#include "line.h"
+#include "Rectangle.h"
+
 using namespace std;
 using namespace Gdiplus;
 
@@ -46,14 +49,17 @@ BEGIN_MESSAGE_MAP(CPainterView, CView)
 	ON_WM_LBUTTONUP()
 //	ON_WM_MOVE()
 	ON_WM_MOUSEMOVE()
+	ON_COMMAND(ID_BUTTON_LINE, &CPainterView::OnButtonLine)
+	ON_UPDATE_COMMAND_UI(ID_BUTTON_LINE, &CPainterView::OnUpdateButtonLine)
+	ON_COMMAND(ID_BUTTON_RECTANGLE, &CPainterView::OnButtonRectangle)
+	ON_UPDATE_COMMAND_UI(ID_BUTTON_RECTANGLE, &CPainterView::OnUpdateButtonRectangle)
 END_MESSAGE_MAP()
 
 // CPainterView construction/destruction
 
-CPainterView::CPainterView()
+CPainterView::CPainterView() :
+	_tool(ToolTypeLine)
 {
-	// TODO: add construction code here
-
 }
 
 CPainterView::~CPainterView()
@@ -97,7 +103,7 @@ void CPainterView::Draw(Gdiplus::Graphics& graphics)
 	SolidBrush BKbrush(Gdiplus::Color::White);
 	graphics.FillRectangle(&BKbrush, 0, 0, rect.Width(), rect.Height());
 
-	auto& lines = doc->GetLines();
+	auto& lines = doc->GetShapes();
 
 	Pen pen(Color::Red);
 	for (auto iter = lines.begin(); iter != lines.end(); ++iter)
@@ -108,6 +114,10 @@ void CPainterView::Draw(Gdiplus::Graphics& graphics)
 	if (_temp_line)
 	{
 		_temp_line->Draw(graphics);
+	}
+	if (_temp_rect)
+	{
+		_temp_rect->Draw(graphics);
 	}
 }
 
@@ -178,10 +188,16 @@ CPainterDoc* CPainterView::GetDocument() const // non-debug version is inline
 
 void CPainterView::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	_temp_line = shared_ptr<CLine>(new CLine);
+	if (_tool == ToolTypeLine)
+	{
+		_temp_line = shared_ptr<CLine>(new CLine(Point(point.x, point.y),
+			Point(point.x, point.y)));
+	}
+	else if (_tool == ToolTypeRectangle)
+	{
+		_temp_rect = shared_ptr<CRectangle>(new CRectangle(point.x, point.y, 0, 0));
+	}
 
-	_temp_line->SetPoint1(Point(point.x, point.y));
-	_temp_line->SetPoint2(Point(point.x, point.y));
 
 	Invalidate(FALSE);
 	UpdateWindow();
@@ -198,22 +214,58 @@ void CPainterView::OnLButtonUp(UINT nFlags, CPoint point)
 
 	if (_temp_line)
 	{
-		doc->AddLine(_temp_line);
+		doc->AddShape(_temp_line);
 		_temp_line.reset();
 	}
 
+	if (_temp_rect)
+	{
+		doc->AddShape(_temp_rect);
+		_temp_rect.reset();
+	}
 	CView::OnLButtonUp(nFlags, point);
 }
 
 
 void CPainterView::OnMouseMove(UINT nFlags, CPoint point)
 {
-	if ((nFlags & MK_LBUTTON) == MK_LBUTTON && _temp_line)
+ 	if ((nFlags & MK_LBUTTON) == MK_LBUTTON && _temp_line)
+ 	{
+ 		_temp_line->SetPoint2(Point(point.x, point.y));
+ 	}
+
+	if ((nFlags & MK_LBUTTON) == MK_LBUTTON && _temp_rect)
 	{
-		_temp_line->SetPoint2(Point(point.x, point.y));
+		_temp_rect->SetWidth(point.x - _temp_rect->GetX());
+		_temp_rect->SetHeight(point.y - _temp_rect->GetY());
 	}
+
 	Invalidate(FALSE);
 	UpdateWindow();
 
 	CView::OnMouseMove(nFlags, point);
+}
+
+
+void CPainterView::OnButtonLine()
+{
+	_tool = ToolTypeLine;
+}
+
+
+void CPainterView::OnUpdateButtonLine(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(_tool == ToolTypeLine);
+}
+
+
+void CPainterView::OnButtonRectangle()
+{
+	_tool = ToolTypeRectangle;
+}
+
+
+void CPainterView::OnUpdateButtonRectangle(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(_tool == ToolTypeRectangle);
 }

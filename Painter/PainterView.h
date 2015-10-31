@@ -17,7 +17,15 @@
 #include <vector>
 #include <memory>
 
-#include "Line.h"
+enum ToolType
+{
+	ToolTypeLine,
+	ToolTypeRectangle,
+
+};
+
+class CLine;
+class CRectangle;
 
 class CPainterView : public CView
 {
@@ -65,7 +73,15 @@ public:
 
 private:
  	std::shared_ptr<CLine> _temp_line;
+	std::shared_ptr<CRectangle> _temp_rect;
 
+	ToolType _tool;
+
+public:
+	afx_msg void OnButtonLine();
+	afx_msg void OnUpdateButtonLine(CCmdUI *pCmdUI);
+	afx_msg void OnButtonRectangle();
+	afx_msg void OnUpdateButtonRectangle(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // debug version in PainterView.cpp

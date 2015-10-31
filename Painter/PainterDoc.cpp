@@ -25,6 +25,7 @@
 #include <memory>
 #include "line.h"
 #include <gdiplus.h>
+#include "Rectangle.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -69,33 +70,41 @@ BOOL CPainterDoc::OnNewDocument()
 
 void CPainterDoc::Serialize(CArchive& ar)
 {
-	ar << static_cast<size_t>(_lines.size());
 	if (ar.IsStoring())
 	{
-		// TODO: add storing code here
-		for (auto line = _lines.begin(); line != _lines.end(); ++line)
+		ar << static_cast<size_t>(_shapes.size());
+		for (auto shape = _shapes.begin(); shape != _shapes.end(); ++shape)
 		{
-			ar << (*line)->GetPoint1().X << (*line)->GetPoint1().Y
-				<< (*line)->GetPoint2().X << (*line)->GetPoint2().Y;
+			(*shape)->Save(ar);
 		}
 	}
 	else
 	{
-		// TODO: add loading code here
-		_lines.clear();
+		_shapes.clear();
 
 		size_t size;
 		ar >> size;
 
 		Point point1, point2;
+
+		shared_ptr<CShape> shape;
 		for (size_t i = 0; i < size; ++i)
 		{
-			ar >> point1.X >> point1.Y >> point2.X >> point2.Y;
-			shared_ptr<CLine> line(new CLine);
-			line->SetPoint1(point1);
-			line->SetPoint2(point2);
-
-			_lines.push_back(line);
+			int type;
+			ar >> type;
+			switch (type)
+			{
+			case ShapeLine:
+				shape = shared_ptr<CShape>(new CLine);
+				break;
+			case ShapeRectangle:
+				shape = shared_ptr<CShape>(new CRectangle);
+				break;
+			default:
+				ASSERT(0);
+			}
+			shape->Load(ar);
+			_shapes.push_back(shape);
 		}
 	}
 }
@@ -167,14 +176,14 @@ void CPainterDoc::Dump(CDumpContext& dc) const
 	CDocument::Dump(dc);
 }
 
-const vector<shared_ptr<CLine>>& CPainterDoc::GetLines() const
+const vector<shared_ptr<CShape>>& CPainterDoc::GetShapes() const
 {
-	return _lines;
+	return _shapes;
 }
 
-void CPainterDoc::AddLine(shared_ptr<CLine> line)
+void CPainterDoc::AddShape(shared_ptr<CShape> shape)
 {
-	_lines.push_back(line);
+	_shapes.push_back(shape);
 }
 
 
