@@ -16,6 +16,7 @@
 
 #include <vector>
 #include <memory>
+#include <map>
 
 enum ToolType
 {
@@ -24,6 +25,7 @@ enum ToolType
 	ToolTypeEllipse,
 };
 
+class CTool;
 class CLine;
 class CRectangle;
 class CEllipse;
@@ -69,9 +71,9 @@ public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 
 private:
- 	std::shared_ptr<CShape> _temp_shape;
-
+	std::map<ToolType, std::shared_ptr<CTool>> _tools;
 	ToolType _tool;
+
 	CPoint _down_point;
 
 public:
@@ -81,6 +83,8 @@ public:
 	afx_msg void OnUpdateButtonRectangle(CCmdUI *pCmdUI);
 	afx_msg void OnButtonEllipse();
 	afx_msg void OnUpdateButtonEllipse(CCmdUI *pCmdUI);
+	afx_msg void OnButtonBorderColor();
+	afx_msg void OnButtonFillColor();
 };
 
 #ifndef _DEBUG  // debug version in PainterView.cpp

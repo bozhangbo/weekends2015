@@ -54,6 +54,18 @@
     <ClInclude Include="Ellipse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Tool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LineTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RectangleTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EllipseTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Painter.cpp">
@@ -84,6 +96,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Ellipse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LineTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RectangleTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EllipseTool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

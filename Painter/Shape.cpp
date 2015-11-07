@@ -2,7 +2,9 @@
 #include "Shape.h"
 
 
-CShape::CShape()
+CShape::CShape() :
+	_border_color(Gdiplus::Color(0, 255, 0)),
+	_fill_color(Gdiplus::Color(192, 255, 192))
 {
 }
 
@@ -35,3 +37,24 @@ void CShape::Load(CArchive& ar)
 
 	_rect = Gdiplus::Rect(top_left, size);
 }
+
+void CShape::SetBorderColor(Gdiplus::Color border_color)
+{
+	_border_color = border_color;
+}
+
+Gdiplus::Color CShape::GetBorderColor() const
+{
+	return _border_color;
+}
+
+void CShape::SetFillColor(Gdiplus::Color fill_color)
+{
+	_fill_color = fill_color;
+}
+
+Gdiplus::Color CShape::GetFillColor() const
+{
+	return _fill_color;
+}
+

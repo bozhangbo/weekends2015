@@ -22,10 +22,14 @@
 #include "PainterDoc.h"
 #include "PainterView.h"
 #include <Gdiplus.h>
+#include "Tool.h"
 
 #include "line.h"
 #include "Rectangle.h"
 #include "Ellipse.h"
+#include "LineTool.h"
+#include "RectangleTool.h"
+#include "EllipseTool.h"
 
 using namespace std;
 using namespace Gdiplus;
@@ -56,6 +60,8 @@ BEGIN_MESSAGE_MAP(CPainterView, CView)
 	ON_UPDATE_COMMAND_UI(ID_BUTTON_RECTANGLE, &CPainterView::OnUpdateButtonRectangle)
 	ON_COMMAND(ID_BUTTON_ELLIPSE, &CPainterView::OnButtonEllipse)
 	ON_UPDATE_COMMAND_UI(ID_BUTTON_ELLIPSE, &CPainterView::OnUpdateButtonEllipse)
+	ON_COMMAND(ID_BUTTON_BORDER_COLOR, &CPainterView::OnButtonBorderColor)
+	ON_COMMAND(ID_BUTTON_FILL_COLOR, &CPainterView::OnButtonFillColor)
 END_MESSAGE_MAP()
 
 // CPainterView construction/destruction
@@ -63,6 +69,9 @@ END_MESSAGE_MAP()
 CPainterView::CPainterView() :
 	_tool(ToolTypeLine)
 {
+	_tools.insert(make_pair(ToolTypeLine, shared_ptr<CLineTool>(new CLineTool)));
+	_tools.insert(make_pair(ToolTypeRectangle, shared_ptr < CRectangleTool>(new CRectangleTool)));
+	_tools.insert(make_pair(ToolTypeEllipse, shared_ptr < CEllipseTool>(new CEllipseTool)));
 }
 
 CPainterView::~CPainterView()
@@ -113,9 +122,10 @@ void CPainterView::Draw(Gdiplus::Graphics& graphics)
 		(*shape)->Draw(graphics);
 	}
 
-	if (_temp_shape)
+	auto shape = _tools[_tool]->GetShape();
+	if (shape)
 	{
-		_temp_shape->Draw(graphics);
+		shape->Draw(graphics);
 	}
 }
 
@@ -188,23 +198,26 @@ void CPainterView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	_down_point = point;
 
-	switch (_tool)
-	{
-	case ToolTypeLine:
-	{
-		_temp_shape = shared_ptr<CLine>(new CLine(Point(point.x, point.y),
-			Point(point.x, point.y)));
-		break;
-	}
-	case ToolTypeRectangle:
-		_temp_shape = shared_ptr<CRectangle>(new CRectangle(point.x, point.y, 0, 0));
-		break;
-	case ToolTypeEllipse:
-		_temp_shape = shared_ptr<CEllipse>(new CEllipse(Point(point.x, point.y), Point(point.x, point.y)));
-		break;
-	default:
-		ASSERT(0);
-	}
+	ASSERT(_tools[_tool]);
+	_tools[_tool]->OnLButtonDown(nFlags, point);
+
+// 	switch (_tool)
+// 	{
+// 	case ToolTypeLine:
+// 	{
+// 		_temp_shape = shared_ptr<CLine>(new CLine(Point(point.x, point.y),
+// 			Point(point.x, point.y)));
+// 		break;
+// 	}
+// 	case ToolTypeRectangle:
+// 		_temp_shape = shared_ptr<CRectangle>(new CRectangle(point.x, point.y, 0, 0));
+// 		break;
+// 	case ToolTypeEllipse:
+// 		_temp_shape = shared_ptr<CEllipse>(new CEllipse(Point(point.x, point.y), Point(point.x, point.y)));
+// 		break;
+// 	default:
+// 		ASSERT(0);
+// 	}
 
 	Invalidate(FALSE);
 	UpdateWindow();
@@ -219,10 +232,9 @@ void CPainterView::OnLButtonUp(UINT nFlags, CPoint point)
 	if (doc == nullptr)
 		return;
 
-	if (_temp_shape)
+	if (_tools[_tool]->GetShape())
 	{
-		doc->AddShape(_temp_shape);
-		_temp_shape.reset();
+		doc->AddShape(_tools[_tool]->GetShape());
 	} 
 
 	CView::OnLButtonUp(nFlags, point);
@@ -231,14 +243,8 @@ void CPainterView::OnLButtonUp(UINT nFlags, CPoint point)
 
 void CPainterView::OnMouseMove(UINT nFlags, CPoint point)
 {
- 	if ((nFlags & MK_LBUTTON) == MK_LBUTTON && _temp_shape)
- 	{
-		CRect screen_rect(_down_point, point);
-		screen_rect.NormalizeRect();
-
-		Rect rect(screen_rect.left, screen_rect.top, screen_rect.Width(), screen_rect.Height());
- 		_temp_shape->SetRect(rect);
- 	}
+	ASSERT(_tools[_tool]);
+	_tools[_tool]->OnMouseMove(nFlags, point);
 
 	Invalidate(FALSE);
 	UpdateWindow();
@@ -276,4 +282,16 @@ void CPainterView::OnButtonEllipse()
 void CPainterView::OnUpdateButtonEllipse(CCmdUI *pCmdUI)
 {
 	pCmdUI->SetCheck(_tool == ToolTypeEllipse);
+}
+
+
+void CPainterView::OnButtonBorderColor()
+{
+	// TODO: Add your command handler code here
+}
+
+
+void CPainterView::OnButtonFillColor()
+{
+	// TODO: Add your command handler code here
 }

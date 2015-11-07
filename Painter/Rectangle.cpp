@@ -23,8 +23,10 @@ CRectangle::~CRectangle()
 void CRectangle::Draw(Gdiplus::Graphics& graphics)
 {
 	// SolidBrush brush(Color::Black);
-	Pen pen(Color::Black);
+	SolidBrush brush(_fill_color);
+	graphics.FillRectangle(&brush, _rect);
 
+	Pen pen(_border_color, 5);
 	graphics.DrawRectangle(&pen, _rect);
 }
 

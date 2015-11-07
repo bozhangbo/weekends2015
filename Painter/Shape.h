@@ -20,8 +20,14 @@ public:
 	virtual void Load(CArchive& ar);
 	void SetRect(const Gdiplus::Rect& rect);
 	const Gdiplus::Rect& GetRect() const;
+	void SetBorderColor(Gdiplus::Color border_color);
+	Gdiplus::Color GetBorderColor() const;
+	void SetFillColor(Gdiplus::Color fill_color);
+	Gdiplus::Color GetFillColor() const;
 
 protected:
 	Gdiplus::Rect _rect;
+	Gdiplus::Color _border_color;
+	Gdiplus::Color _fill_color;
 };
 
