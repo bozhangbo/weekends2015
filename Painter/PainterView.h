@@ -69,11 +69,10 @@ public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 
 private:
- 	std::shared_ptr<CLine> _temp_line;
-	std::shared_ptr<CRectangle> _temp_rect;
-	std::shared_ptr<CEllipse> _temp_ellipse;
+ 	std::shared_ptr<CShape> _temp_shape;
 
 	ToolType _tool;
+	CPoint _down_point;
 
 public:
 	afx_msg void OnButtonLine();

@@ -6,13 +6,10 @@ CEllipse::CEllipse()
 {
 }
 
-CEllipse::CEllipse(const Gdiplus::Point& point1, const Gdiplus::Point& point2) :
-	_point1(point1),
-	_point2(point2)
+CEllipse::CEllipse(const Gdiplus::Point& point1, const Gdiplus::Point& point2) 
 {
-
+	SetRect(Gdiplus::Rect(point1.X, point1.Y, abs(point2.X - point1.X), abs(point2.Y - point1.Y)));
 }
-
 
 CEllipse::~CEllipse()
 {
@@ -21,16 +18,13 @@ CEllipse::~CEllipse()
 void CEllipse::Draw(Gdiplus::Graphics& graphics)
 {
 	Gdiplus::Pen pen(Gdiplus::Color::Red);
-	graphics.DrawEllipse(&pen, _point1.X, _point1.Y, abs(_point1.X - _point2.X), abs(_point1.Y - _point2.Y));
-
+	graphics.DrawEllipse(&pen, _rect);
 }
 
 void CEllipse::Save(CArchive& ar)
 {
-	ar << int(ShapeEllipse) << _point1.X << _point1.Y << _point2.X << _point2.Y;
+	ar << int(ShapeEllipse);
+
+	CShape::Save(ar);
 }
 
-void CEllipse::Load(CArchive& ar)
-{
-	ar >> _point1.X >> _point1.Y >> _point2.X >> _point2.Y;
-}

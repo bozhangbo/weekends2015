@@ -25,15 +25,12 @@ void CRectangle::Draw(Gdiplus::Graphics& graphics)
 	// SolidBrush brush(Color::Black);
 	Pen pen(Color::Black);
 
-	graphics.DrawRectangle(&pen, _top_left.X, _top_left.Y, _size.Width, _size.Height);
+	graphics.DrawRectangle(&pen, _rect);
 }
 
 void CRectangle::Save(CArchive& ar)
 {
-	ar << int(ShapeRectangle) << _top_left.X << _top_left.Y << _size.Width << _size.Height;
+	ar << int(ShapeRectangle);
+	__super::Save(ar);
 }
 
-void CRectangle::Load(CArchive& ar)
-{
-	ar >> _top_left.X >> _top_left.Y >> _size.Width >> _size.Height;
-}

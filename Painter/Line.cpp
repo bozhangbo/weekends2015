@@ -21,7 +21,7 @@ CLine::~CLine()
 void CLine::Draw(Gdiplus::Graphics& graphics)
 {
 	Pen pen(Color::Red);
-	graphics.DrawLine(&pen, _point1, _point2);
+	graphics.DrawLine(&pen, Point(_rect.GetLeft(), _rect.GetTop()), Point(_rect.GetRight(), _rect.GetBottom()));
 }
 
 void CLine::Save(CArchive& ar)

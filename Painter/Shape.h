@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Gdiplus.h>
+
 enum ShapeType
 {
 	ShapeLine = 1,
@@ -14,7 +16,12 @@ public:
 	virtual ~CShape();
 
 	virtual void Draw(Gdiplus::Graphics& graphics) = 0;
-	virtual void Save(CArchive& ar) = 0;
-	virtual void Load(CArchive& ar) = 0;
+	virtual void Save(CArchive& ar);
+	virtual void Load(CArchive& ar);
+	void SetRect(const Gdiplus::Rect& rect);
+	const Gdiplus::Rect& GetRect() const;
+
+protected:
+	Gdiplus::Rect _rect;
 };
 

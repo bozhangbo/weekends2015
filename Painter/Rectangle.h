@@ -42,7 +42,6 @@ public:
 
 	virtual void Draw(Gdiplus::Graphics& graphics);
 	virtual void Save(CArchive& ar);
-	virtual void Load(CArchive& ar);
 
 private:
 	Gdiplus::Point _top_left;

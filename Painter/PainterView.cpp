@@ -113,17 +113,9 @@ void CPainterView::Draw(Gdiplus::Graphics& graphics)
 		(*shape)->Draw(graphics);
 	}
 
-	if (_temp_line)
+	if (_temp_shape)
 	{
-		_temp_line->Draw(graphics);
-	}
-	if (_temp_rect)
-	{
-		_temp_rect->Draw(graphics);
-	}
-	if (_temp_ellipse)
-	{
-		_temp_ellipse->Draw(graphics);
+		_temp_shape->Draw(graphics);
 	}
 }
 
@@ -194,19 +186,21 @@ CPainterDoc* CPainterView::GetDocument() const // non-debug version is inline
 
 void CPainterView::OnLButtonDown(UINT nFlags, CPoint point)
 {
+	_down_point = point;
+
 	switch (_tool)
 	{
 	case ToolTypeLine:
 	{
-		_temp_line = shared_ptr<CLine>(new CLine(Point(point.x, point.y),
+		_temp_shape = shared_ptr<CLine>(new CLine(Point(point.x, point.y),
 			Point(point.x, point.y)));
 		break;
 	}
 	case ToolTypeRectangle:
-		_temp_rect = shared_ptr<CRectangle>(new CRectangle(point.x, point.y, 0, 0));
+		_temp_shape = shared_ptr<CRectangle>(new CRectangle(point.x, point.y, 0, 0));
 		break;
 	case ToolTypeEllipse:
-		_temp_ellipse = shared_ptr<CEllipse>(new CEllipse(Point(point.x, point.y), Point(point.x, point.y)));
+		_temp_shape = shared_ptr<CEllipse>(new CEllipse(Point(point.x, point.y), Point(point.x, point.y)));
 		break;
 	default:
 		ASSERT(0);
@@ -225,20 +219,11 @@ void CPainterView::OnLButtonUp(UINT nFlags, CPoint point)
 	if (doc == nullptr)
 		return;
 
-	if (_temp_line)
+	if (_temp_shape)
 	{
-		doc->AddShape(_temp_line);
-		_temp_line.reset();
+		doc->AddShape(_temp_shape);
+		_temp_shape.reset();
 	} 
-	else if (_temp_rect)
-	{
-		doc->AddShape(_temp_rect);
-		_temp_rect.reset();
-	}
-	else if (_temp_ellipse)
-	{
-		doc->AddShape(_temp_ellipse);
-	}
 
 	CView::OnLButtonUp(nFlags, point);
 }
@@ -246,21 +231,14 @@ void CPainterView::OnLButtonUp(UINT nFlags, CPoint point)
 
 void CPainterView::OnMouseMove(UINT nFlags, CPoint point)
 {
- 	if ((nFlags & MK_LBUTTON) == MK_LBUTTON && _temp_line)
+ 	if ((nFlags & MK_LBUTTON) == MK_LBUTTON && _temp_shape)
  	{
- 		_temp_line->SetPoint2(Point(point.x, point.y));
+		CRect screen_rect(_down_point, point);
+		screen_rect.NormalizeRect();
+
+		Rect rect(screen_rect.left, screen_rect.top, screen_rect.Width(), screen_rect.Height());
+ 		_temp_shape->SetRect(rect);
  	}
-
-	if ((nFlags & MK_LBUTTON) == MK_LBUTTON && _temp_rect)
-	{
-		_temp_rect->SetWidth(point.x - _temp_rect->GetX());
-		_temp_rect->SetHeight(point.y - _temp_rect->GetY());
-	}
-
-	if ((nFlags & MK_LBUTTON) == MK_LBUTTON && _temp_ellipse)
-	{
-		_temp_ellipse->SetPoint2(Point(point.x, point.y));
-	}
 
 	Invalidate(FALSE);
 	UpdateWindow();
