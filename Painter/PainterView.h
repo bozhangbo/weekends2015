@@ -21,11 +21,12 @@ enum ToolType
 {
 	ToolTypeLine,
 	ToolTypeRectangle,
-
+	ToolTypeEllipse,
 };
 
 class CLine;
 class CRectangle;
+class CEllipse;
 
 class CPainterView : public CView
 {
@@ -70,6 +71,7 @@ public:
 private:
  	std::shared_ptr<CLine> _temp_line;
 	std::shared_ptr<CRectangle> _temp_rect;
+	std::shared_ptr<CEllipse> _temp_ellipse;
 
 	ToolType _tool;
 
@@ -78,6 +80,8 @@ public:
 	afx_msg void OnUpdateButtonLine(CCmdUI *pCmdUI);
 	afx_msg void OnButtonRectangle();
 	afx_msg void OnUpdateButtonRectangle(CCmdUI *pCmdUI);
+	afx_msg void OnButtonEllipse();
+	afx_msg void OnUpdateButtonEllipse(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // debug version in PainterView.cpp

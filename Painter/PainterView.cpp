@@ -25,6 +25,7 @@
 
 #include "line.h"
 #include "Rectangle.h"
+#include "Ellipse.h"
 
 using namespace std;
 using namespace Gdiplus;
@@ -53,6 +54,8 @@ BEGIN_MESSAGE_MAP(CPainterView, CView)
 	ON_UPDATE_COMMAND_UI(ID_BUTTON_LINE, &CPainterView::OnUpdateButtonLine)
 	ON_COMMAND(ID_BUTTON_RECTANGLE, &CPainterView::OnButtonRectangle)
 	ON_UPDATE_COMMAND_UI(ID_BUTTON_RECTANGLE, &CPainterView::OnUpdateButtonRectangle)
+	ON_COMMAND(ID_BUTTON_ELLIPSE, &CPainterView::OnButtonEllipse)
+	ON_UPDATE_COMMAND_UI(ID_BUTTON_ELLIPSE, &CPainterView::OnUpdateButtonEllipse)
 END_MESSAGE_MAP()
 
 // CPainterView construction/destruction
@@ -117,7 +120,10 @@ void CPainterView::Draw(Gdiplus::Graphics& graphics)
 	if (_temp_rect)
 	{
 		_temp_rect->Draw(graphics);
-
+	}
+	if (_temp_ellipse)
+	{
+		_temp_ellipse->Draw(graphics);
 	}
 }
 
@@ -188,14 +194,22 @@ CPainterDoc* CPainterView::GetDocument() const // non-debug version is inline
 
 void CPainterView::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	if (_tool == ToolTypeLine)
+	switch (_tool)
+	{
+	case ToolTypeLine:
 	{
 		_temp_line = shared_ptr<CLine>(new CLine(Point(point.x, point.y),
 			Point(point.x, point.y)));
+		break;
 	}
-	else if (_tool == ToolTypeRectangle)
-	{
+	case ToolTypeRectangle:
 		_temp_rect = shared_ptr<CRectangle>(new CRectangle(point.x, point.y, 0, 0));
+		break;
+	case ToolTypeEllipse:
+		_temp_ellipse = shared_ptr<CEllipse>(new CEllipse(Point(point.x, point.y), Point(point.x, point.y)));
+		break;
+	default:
+		ASSERT(0);
 	}
 
 	Invalidate(FALSE);
@@ -221,6 +235,11 @@ void CPainterView::OnLButtonUp(UINT nFlags, CPoint point)
 		doc->AddShape(_temp_rect);
 		_temp_rect.reset();
 	}
+	else if (_temp_ellipse)
+	{
+		doc->AddShape(_temp_ellipse);
+	}
+
 	CView::OnLButtonUp(nFlags, point);
 }
 
@@ -236,6 +255,11 @@ void CPainterView::OnMouseMove(UINT nFlags, CPoint point)
 	{
 		_temp_rect->SetWidth(point.x - _temp_rect->GetX());
 		_temp_rect->SetHeight(point.y - _temp_rect->GetY());
+	}
+
+	if ((nFlags & MK_LBUTTON) == MK_LBUTTON && _temp_ellipse)
+	{
+		_temp_ellipse->SetPoint2(Point(point.x, point.y));
 	}
 
 	Invalidate(FALSE);
@@ -262,4 +286,16 @@ void CPainterView::OnButtonRectangle()
 void CPainterView::OnUpdateButtonRectangle(CCmdUI *pCmdUI)
 {
 	pCmdUI->SetCheck(_tool == ToolTypeRectangle);
+}
+
+
+void CPainterView::OnButtonEllipse()
+{
+	_tool = ToolTypeEllipse;
+}
+
+
+void CPainterView::OnUpdateButtonEllipse(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(_tool == ToolTypeEllipse);
 }

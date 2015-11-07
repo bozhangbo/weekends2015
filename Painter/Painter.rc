@@ -479,6 +479,11 @@ BEGIN
     IDS_EDIT_MENU           "Edit"
 END
 
+STRINGTABLE
+BEGIN
+    ID_BUTTON_ELLIPSE       "Draw ellipse."
+END
+
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
