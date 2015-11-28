@@ -30,6 +30,7 @@
 #include "LineTool.h"
 #include "RectangleTool.h"
 #include "EllipseTool.h"
+#include "MainFrm.h"
 
 using namespace std;
 using namespace Gdiplus;
@@ -287,7 +288,16 @@ void CPainterView::OnUpdateButtonEllipse(CCmdUI *pCmdUI)
 
 void CPainterView::OnButtonBorderColor()
 {
-	// TODO: Add your command handler code here
+	auto main_frame = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
+	ASSERT(main_frame != nullptr);
+
+	auto& ribbon = main_frame->GetRibbon();
+
+	auto color_button = dynamic_cast<CMFCRibbonColorButton*>(ribbon.FindByID(ID_BUTTON_BORDER_COLOR));
+	auto color = color_button->GetColor();
+
+	_tools[_tool]->SetColor(Gdiplus::Color(255, 
+		GetRValue(color), GetGValue(color), GetBValue(color)));
 }
 
 

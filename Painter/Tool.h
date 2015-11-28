@@ -13,5 +13,11 @@ public:
 	virtual void OnMouseMove(UINT nFlags, CPoint point) = 0;
 
 	virtual std::shared_ptr<CShape> GetShape() = 0;
+
+	void SetColor(Gdiplus::Color color);
+	Gdiplus::Color GetColor() const;
+
+private:
+	Gdiplus::Color _color;
 };
 

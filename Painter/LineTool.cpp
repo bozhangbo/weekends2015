@@ -20,7 +20,7 @@ void CLineTool::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	_line = shared_ptr<CLine>(new CLine(Point(point.x, point.y),
 		 			Point(point.x, point.y)));
-
+	_line->SetBorderColor(GetColor());
 }
 
 void CLineTool::OnMouseMove(UINT nFlags, CPoint point)

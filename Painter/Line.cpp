@@ -19,7 +19,7 @@ CLine::~CLine()
 
 void CLine::Draw(Gdiplus::Graphics& graphics)
 {
-	Pen pen(Color::Red);
+	Pen pen(GetBorderColor());
 	graphics.DrawLine(&pen, _point1, _point2);
 }
 
