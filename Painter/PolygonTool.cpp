@@ -26,6 +26,9 @@ void CPolygonTool::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		_polygon->AddPoint(Point(point.x, point.y));
 	}
+
+	_polygon->SetBorderColor(GetBorderColor());
+	_polygon->SetFillColor(GetFillColor());
 }
 
 void CPolygonTool::OnMouseMove(UINT nFlags, CPoint point)

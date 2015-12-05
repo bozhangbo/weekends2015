@@ -13,9 +13,6 @@ public:
 	virtual void Draw(Gdiplus::Graphics& graphics);
 	virtual void Save(CArchive& ar);
 
-
-	private:
-
-
+private:
 };
 

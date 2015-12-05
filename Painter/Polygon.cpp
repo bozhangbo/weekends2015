@@ -22,22 +22,36 @@ void CPolygon::Draw(Gdiplus::Graphics& graphics)
 	}
 	else
 	{
-		graphics.DrawPolygon(&pen, _points.data(), _points.size());
-
 		SolidBrush brush(GetFillColor());
+
 		graphics.FillPolygon(&brush, _points.data(), _points.size());
+		graphics.DrawPolygon(&pen, _points.data(), _points.size());
 	}
 
 }
 
 void CPolygon::Save(CArchive& ar)
 {
-
+	ar << (int)ShapePolygon;
+	CShape::Save(ar);
+	ar << _points.size();
+	for (size_t i = 0; i < _points.size(); ++i)
+	{
+		ar << _points[i].X << _points[i].Y;
+	}
 }
 
 void CPolygon::Load(CArchive& ar)
 {
+	CShape::Load(ar);
+	size_t point_count = 0;
+	ar >> point_count;
 
+	_points.resize(point_count);
+	for (size_t i = 0; i < point_count; ++i)
+	{
+		ar >> _points[i].X >> _points[i].Y;
+	}
 }
 
 void CPolygon::AddPoint(Gdiplus::Point point)

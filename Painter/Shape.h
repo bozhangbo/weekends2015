@@ -7,6 +7,7 @@ enum ShapeType
 	ShapeLine = 1,
 	ShapeRectangle = 2,
 	ShapeEllipse = 3,
+	ShapePolygon = 4,
 };
 
 class CShape
