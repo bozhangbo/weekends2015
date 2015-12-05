@@ -17,7 +17,10 @@ CEllipse::~CEllipse()
 
 void CEllipse::Draw(Gdiplus::Graphics& graphics)
 {
-	Gdiplus::Pen pen(Gdiplus::Color::Red);
+	Gdiplus::SolidBrush brush(GetFillColor());
+	graphics.FillEllipse(&brush, _rect);
+
+	Gdiplus::Pen pen(GetBorderColor());
 	graphics.DrawEllipse(&pen, _rect);
 }
 

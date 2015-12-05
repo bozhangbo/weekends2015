@@ -17,12 +17,14 @@
 #include <vector>
 #include <memory>
 #include <map>
+#include "Tool.h"
 
 enum ToolType
 {
 	ToolTypeLine,
 	ToolTypeRectangle,
 	ToolTypeEllipse,
+	ToolTypePolygon,
 };
 
 class CTool;
@@ -30,7 +32,7 @@ class CLine;
 class CRectangle;
 class CEllipse;
 
-class CPainterView : public CView
+class CPainterView : public CView, public IShapeUser
 {
 protected: // create from serialization only
 	CPainterView();
@@ -48,6 +50,8 @@ protected:
 	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
 	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
 	virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);
+
+	virtual bool AddShape(std::shared_ptr<CShape> shape);
 
 // Implementation
 public:
@@ -85,6 +89,9 @@ public:
 	afx_msg void OnUpdateButtonEllipse(CCmdUI *pCmdUI);
 	afx_msg void OnButtonBorderColor();
 	afx_msg void OnButtonFillColor();
+	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
+	afx_msg void OnButtonPolygon();
+	afx_msg void OnUpdateButtonPolygon(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // debug version in PainterView.cpp

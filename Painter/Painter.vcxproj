@@ -109,6 +109,8 @@
     <ClInclude Include="Painter.h" />
     <ClInclude Include="PainterDoc.h" />
     <ClInclude Include="PainterView.h" />
+    <ClInclude Include="Polygon.h" />
+    <ClInclude Include="PolygonTool.h" />
     <ClInclude Include="PropertiesWnd.h" />
     <ClInclude Include="Rectangle.h" />
     <ClInclude Include="RectangleTool.h" />
@@ -127,6 +129,8 @@
     <ClCompile Include="Painter.cpp" />
     <ClCompile Include="PainterDoc.cpp" />
     <ClCompile Include="PainterView.cpp" />
+    <ClCompile Include="Polygon.cpp" />
+    <ClCompile Include="PolygonTool.cpp" />
     <ClCompile Include="PropertiesWnd.cpp" />
     <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="RectangleTool.cpp" />

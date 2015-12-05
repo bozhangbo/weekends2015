@@ -20,6 +20,8 @@ void CRectangleTool::OnLButtonDown(UINT nFlags, CPoint point)
 
 	_rect = shared_ptr<CRectangle>(new CRectangle(point.x, point.y,
 		0,0));
+	_rect->SetBorderColor(GetBorderColor());
+	_rect->SetFillColor(GetFillColor());
 }
 
 void CRectangleTool::OnMouseMove(UINT nFlags, CPoint point)
@@ -37,4 +39,10 @@ void CRectangleTool::OnMouseMove(UINT nFlags, CPoint point)
 std::shared_ptr<CShape> CRectangleTool::GetShape()
 {
 	return _rect;
+}
+
+void CRectangleTool::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	ASSERT(s_shape_user != nullptr);
+	s_shape_user->AddShape(_rect);
 }

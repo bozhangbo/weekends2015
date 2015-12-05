@@ -1,22 +1,23 @@
 #pragma once
 #include "Tool.h"
-#include <memory>
 
-class CEllipse;
+class CPolygon;
 
-class CEllipseTool :
+class CPolygonTool :
 	public CTool
 {
 public:
-	CEllipseTool();
-	virtual ~CEllipseTool();
+	CPolygonTool();
+	virtual ~CPolygonTool();
 
 	virtual void OnLButtonDown(UINT nFlags, CPoint point);
 	virtual void OnMouseMove(UINT nFlags, CPoint point);
-	virtual void OnLButtonUp(UINT nFlags, CPoint point);
+
+	virtual void OnLButtonDoubleClick(UINT nFlags, CPoint point);
+
 	virtual std::shared_ptr<CShape> GetShape();
 
-private:
-	std::shared_ptr<CEllipse> _ellipse;
+protected:
+	std::shared_ptr<CPolygon> _polygon;
 };
 

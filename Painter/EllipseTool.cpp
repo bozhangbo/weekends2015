@@ -20,6 +20,9 @@ void CEllipseTool::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	_ellipse = shared_ptr<CEllipse>(new CEllipse(Point(point.x, point.y),
 		Point(point.x, point.y)));
+
+	_ellipse->SetBorderColor(GetBorderColor());
+	_ellipse->SetFillColor(GetFillColor());
 }
 
 void CEllipseTool::OnMouseMove(UINT nFlags, CPoint point)
@@ -35,4 +38,9 @@ void CEllipseTool::OnMouseMove(UINT nFlags, CPoint point)
 std::shared_ptr<CShape> CEllipseTool::GetShape()
 {
 	return _ellipse;
+}
+
+void CEllipseTool::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	s_shape_user->AddShape(_ellipse);
 }

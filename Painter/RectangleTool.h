@@ -12,6 +12,8 @@ public:
 	virtual ~CRectangleTool();
 	virtual void OnLButtonDown(UINT nFlags, CPoint point);
 	virtual void OnMouseMove(UINT nFlags, CPoint point);
+	virtual void OnLButtonUp(UINT nFlags, CPoint point);
+
 	virtual std::shared_ptr<CShape> GetShape();
 
 private:

@@ -20,7 +20,7 @@ void CLineTool::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	_line = shared_ptr<CLine>(new CLine(Point(point.x, point.y),
 		 			Point(point.x, point.y)));
-	_line->SetBorderColor(GetColor());
+	_line->SetBorderColor(GetBorderColor());
 }
 
 void CLineTool::OnMouseMove(UINT nFlags, CPoint point)
@@ -34,4 +34,9 @@ void CLineTool::OnMouseMove(UINT nFlags, CPoint point)
 std::shared_ptr<CShape> CLineTool::GetShape()
 {
 	return _line;
+}
+
+void CLineTool::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	s_shape_user->AddShape(_line);
 }
