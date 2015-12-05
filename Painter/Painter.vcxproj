@@ -157,6 +157,7 @@
     <Image Include="res\writesmall.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="res\Painter.rc2" />
     <None Include="res\ribbon.mfcribbon-ms" />
   </ItemGroup>

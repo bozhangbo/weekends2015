@@ -167,5 +167,6 @@
     <None Include="res\Painter.rc2">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>
