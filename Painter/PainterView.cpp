@@ -32,6 +32,7 @@
 #include "EllipseTool.h"
 #include "MainFrm.h"
 #include "PolygonTool.h"
+#include "SelectTool.h"
 
 using namespace std;
 using namespace Gdiplus;
@@ -67,6 +68,8 @@ BEGIN_MESSAGE_MAP(CPainterView, CView)
 	ON_WM_LBUTTONDBLCLK()
 	ON_COMMAND(ID_BUTTON_POLYGON, &CPainterView::OnButtonPolygon)
 	ON_UPDATE_COMMAND_UI(ID_BUTTON_POLYGON, &CPainterView::OnUpdateButtonPolygon)
+	ON_COMMAND(ID_BUTTON_SELECT, &CPainterView::OnButtonSelect)
+	ON_UPDATE_COMMAND_UI(ID_BUTTON_SELECT, &CPainterView::OnUpdateButtonSelect)
 END_MESSAGE_MAP()
 
 // CPainterView construction/destruction
@@ -76,6 +79,7 @@ CPainterView::CPainterView() :
 {
 	CTool::SetShapeUser(this);
 
+	_tools.insert(make_pair(ToolTypeSelect, shared_ptr<CSelectTool>(new CSelectTool)));
 	_tools.insert(make_pair(ToolTypeLine, shared_ptr<CLineTool>(new CLineTool)));
 	_tools.insert(make_pair(ToolTypeRectangle, shared_ptr < CRectangleTool>(new CRectangleTool)));
 	_tools.insert(make_pair(ToolTypeEllipse, shared_ptr < CEllipseTool>(new CEllipseTool)));
@@ -281,6 +285,15 @@ void CPainterView::OnUpdateButtonPolygon(CCmdUI *pCmdUI)
 	pCmdUI->SetCheck(_tool == ToolTypePolygon);
 }
 
+void CPainterView::OnButtonSelect()
+{
+	_tool = ToolTypeSelect;
+}
+
+void CPainterView::OnUpdateButtonSelect(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(_tool == ToolTypeSelect);
+}
 
 void CPainterView::OnButtonBorderColor()
 {
@@ -322,6 +335,9 @@ void CPainterView::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 bool CPainterView::AddShape(std::shared_ptr<CShape> shape)
 {
+	if (!shape)
+		return false;
+
 	auto doc = GetDocument();
 	if (doc == nullptr)
 		return false;
@@ -331,5 +347,11 @@ bool CPainterView::AddShape(std::shared_ptr<CShape> shape)
 	return true;
 }
 
+const std::vector<std::shared_ptr<CShape>> & CPainterView::Shapes() const
+{
+	auto doc = GetDocument();
+	ASSERT(doc != nullptr);
 
+	return doc->GetShapes();
+}
 

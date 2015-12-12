@@ -26,6 +26,8 @@ void CRectangle::Draw(Gdiplus::Graphics& graphics)
 
 	Pen pen(_border_color, 5);
 	graphics.DrawRectangle(&pen, _rect);
+
+	DrawBorder(graphics);
 }
 
 void CRectangle::Save(CArchive& ar)

@@ -72,6 +72,9 @@
     <ClInclude Include="PolygonTool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SelectTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Painter.cpp">
@@ -120,6 +123,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PolygonTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectTool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

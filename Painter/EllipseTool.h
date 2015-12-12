@@ -18,5 +18,6 @@ public:
 
 private:
 	std::shared_ptr<CEllipse> _ellipse;
+	CPoint _down_point;
 };
 

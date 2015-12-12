@@ -1,8 +1,8 @@
 #include "stdafx.h"
+
 #include "LineTool.h"
 #include "line.h"
 #include <gdiplus.h>
-
 
 using namespace std;
 using namespace Gdiplus;

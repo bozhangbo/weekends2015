@@ -22,6 +22,8 @@ void CEllipse::Draw(Gdiplus::Graphics& graphics)
 
 	Gdiplus::Pen pen(GetBorderColor());
 	graphics.DrawEllipse(&pen, _rect);
+
+	DrawBorder(graphics);
 }
 
 void CEllipse::Save(CArchive& ar)
@@ -29,5 +31,10 @@ void CEllipse::Save(CArchive& ar)
 	ar << int(ShapeEllipse);
 
 	CShape::Save(ar);
+}
+
+int CEllipse::HitTest(const Gdiplus::Point& point)
+{
+	return __super::HitTest(point);
 }
 

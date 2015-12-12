@@ -1,11 +1,14 @@
 #pragma once
 
 #include <memory>
+#include <vector>
+
 class CShape;
 
 struct IShapeUser
 {
 	virtual bool AddShape(std::shared_ptr<CShape> shape) = 0;
+	virtual const std::vector<std::shared_ptr<CShape>> & Shapes() const = 0;
 };
 
 class CTool

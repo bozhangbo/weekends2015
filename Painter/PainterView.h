@@ -21,6 +21,7 @@
 
 enum ToolType
 {
+	ToolTypeSelect,
 	ToolTypeLine,
 	ToolTypeRectangle,
 	ToolTypeEllipse,
@@ -92,6 +93,10 @@ public:
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	afx_msg void OnButtonPolygon();
 	afx_msg void OnUpdateButtonPolygon(CCmdUI *pCmdUI);
+	afx_msg void OnButtonSelect();
+	afx_msg void OnUpdateButtonSelect(CCmdUI *pCmdUI);
+
+	virtual const std::vector<std::shared_ptr<CShape>> & Shapes() const override;
 };
 
 #ifndef _DEBUG  // debug version in PainterView.cpp

@@ -1,10 +1,14 @@
 #include "stdafx.h"
 #include "Shape.h"
 
+#include <gdiplus.h>
+
+using namespace Gdiplus;
 
 CShape::CShape() :
 	_border_color(Gdiplus::Color(0, 255, 0)),
-	_fill_color(Gdiplus::Color(192, 255, 192))
+	_fill_color(Gdiplus::Color(192, 255, 192)),
+	_selected(false)
 {
 }
 
@@ -56,5 +60,53 @@ void CShape::SetFillColor(Gdiplus::Color fill_color)
 Gdiplus::Color CShape::GetFillColor() const
 {
 	return _fill_color;
+}
+
+int CShape::HitTest(const Gdiplus::Point& point)
+{
+	return _rect.Contains(point);
+}
+
+void CShape::Select(bool select)
+{
+	_selected = select;
+}
+
+bool CShape::IsSelected() const
+{
+	return _selected;
+}
+
+void CShape::DrawBorder(Gdiplus::Graphics& graphics)
+{
+	if (_selected)
+	{
+		Pen pen(Color::Black);
+
+		graphics.DrawRectangle(&pen, _rect);
+
+		// draw handles
+		DrawHandle(graphics, pen, _rect.GetLeft(), _rect.GetTop());
+		DrawHandle(graphics, pen, _rect.GetRight(), _rect.GetTop());
+		DrawHandle(graphics, pen, _rect.GetRight(), _rect.GetBottom());
+		DrawHandle(graphics, pen, _rect.GetLeft(), _rect.GetBottom());
+
+		DrawHandle(graphics, pen, _rect.GetRight(), (_rect.GetTop() + _rect.GetBottom()) / 2);
+		DrawHandle(graphics, pen, _rect.GetLeft(), (_rect.GetTop() + _rect.GetBottom()) / 2);
+		DrawHandle(graphics, pen, (_rect.GetLeft() + _rect.GetRight()) / 2, _rect.GetTop());
+		DrawHandle(graphics, pen, (_rect.GetLeft() + _rect.GetRight()) / 2, _rect.GetBottom());
+	}	
+}
+
+void CShape::DrawHandle(Graphics& graphics, Pen& pen, INT x, INT y)
+{
+	Rect rect;
+	rect.X = x - 3;
+	rect.Y = y - 3;
+	rect.Height = rect.Width = 7;
+
+	SolidBrush brush(Color::White);
+	graphics.FillRectangle(&brush, rect);
+	graphics.DrawRectangle(&pen, rect);
 }
 

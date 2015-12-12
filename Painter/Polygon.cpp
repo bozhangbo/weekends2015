@@ -28,6 +28,7 @@ void CPolygon::Draw(Gdiplus::Graphics& graphics)
 		graphics.FillPolygon(&brush, _points.data(), _points.size());
 	}
 
+	DrawBorder(graphics);
 }
 
 void CPolygon::Save(CArchive& ar)

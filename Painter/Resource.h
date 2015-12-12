@@ -54,13 +54,17 @@
 #define ID_BUTTON_BORDER_COLOR          32778
 #define ID_BUTTON5                      32779
 #define ID_BUTTON_FILL_COLOR            32779
+#define ID_BUTTON_SELECT                32781
+#define ID_BUTTON_NO_BORDER             32782
+#define ID_BUTTON2                      32783
+#define ID_BUTTON_NO_FILL               32783
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        310
-#define _APS_NEXT_COMMAND_VALUE         32780
+#define _APS_NEXT_COMMAND_VALUE         32784
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
