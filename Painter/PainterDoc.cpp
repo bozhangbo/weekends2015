@@ -26,6 +26,8 @@
 #include "line.h"
 #include <gdiplus.h>
 #include "Rectangle.h"
+#include "Polygon.h"
+#include "Ellipse.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -99,6 +101,12 @@ void CPainterDoc::Serialize(CArchive& ar)
 				break;
 			case ShapeRectangle:
 				shape = shared_ptr<CShape>(new CRectangle);
+				break;
+			case ShapeEllipse:
+				shape = shared_ptr<CShape>(new CEllipse);
+				break;
+			case ShapePolygon:
+				shape = shared_ptr<CShape>(new CPolygon);
 				break;
 			default:
 				ASSERT(0);

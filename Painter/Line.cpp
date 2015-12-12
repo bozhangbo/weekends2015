@@ -25,10 +25,13 @@ void CLine::Draw(Gdiplus::Graphics& graphics)
 
 void CLine::Save(CArchive& ar)
 {
-	ar << int(ShapeLine) << _point1.X << _point1.Y << _point2.X << _point2.Y;
+	ar << int(ShapeLine);
+	CShape::Save(ar);
+	ar << _point1.X << _point1.Y << _point2.X << _point2.Y;
 }
 
 void CLine::Load(CArchive& ar)
 {
+	CShape::Load(ar);
  	ar >> _point1.X >> _point1.Y >> _point2.X >> _point2.Y;
 }
