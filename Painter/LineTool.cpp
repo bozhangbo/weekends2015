@@ -28,6 +28,9 @@ void CLineTool::OnMouseMove(UINT nFlags, CPoint point)
 	if ((nFlags & MK_LBUTTON) == MK_LBUTTON && _line)
 	{
 		_line->SetPoint2(Point(point.x, point.y));
+
+		Gdiplus::Point point1 = _line->GetPoint1();
+		_line->SetRect(Gdiplus::Rect(point1.X, point1.Y, abs(point.x - point1.X), abs(point.y - point1.Y)));
 	}
 }
 
