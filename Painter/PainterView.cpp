@@ -33,6 +33,7 @@
 #include "MainFrm.h"
 #include "PolygonTool.h"
 #include "SelectTool.h"
+#include "CompositShape.h"
 
 using namespace std;
 using namespace Gdiplus;
@@ -70,6 +71,7 @@ BEGIN_MESSAGE_MAP(CPainterView, CView)
 	ON_UPDATE_COMMAND_UI(ID_BUTTON_POLYGON, &CPainterView::OnUpdateButtonPolygon)
 	ON_COMMAND(ID_BUTTON_SELECT, &CPainterView::OnButtonSelect)
 	ON_UPDATE_COMMAND_UI(ID_BUTTON_SELECT, &CPainterView::OnUpdateButtonSelect)
+	ON_COMMAND(ID_BUTTON_COMBINE, &CPainterView::OnButtonCombine)
 END_MESSAGE_MAP()
 
 // CPainterView construction/destruction
@@ -357,3 +359,32 @@ const std::vector<std::shared_ptr<CShape>> & CPainterView::Shapes() const
 	return doc->GetShapes();
 }
 
+void CPainterView::OnButtonCombine()
+{
+	auto doc = GetDocument();
+	ASSERT(doc != nullptr);
+
+	auto& shapes = doc->Shapes();
+
+	shared_ptr<CCompositShape> composite(new CCompositShape);
+
+	for (auto iter = shapes.begin(); iter != shapes.end(); )
+	{
+		if ((*iter)->IsSelected())
+		{
+			(*iter)->Select(false);
+			composite->AddShape(*iter);
+			iter = shapes.erase(iter);
+		}
+		else
+		{
+			++iter;
+		}
+	}
+	composite->UpdateRelativePostions();
+	composite->Select(true);
+	shapes.push_back(composite);
+
+	Invalidate(FALSE);
+	UpdateWindow();
+}

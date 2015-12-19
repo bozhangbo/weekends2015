@@ -20,9 +20,9 @@ bool CSelectTool::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	const auto & shapes = s_shape_user->Shapes();
 
-	bool object_selected = false;
 	for (auto iter = shapes.rbegin(); iter != shapes.rend(); ++iter)
 	{
+		bool object_selected = false;
 		auto handle = (*iter)->HitTest(Point(point.x, point.y));
 		if (handle != HandleNone && !object_selected)
 		{
@@ -30,7 +30,7 @@ bool CSelectTool::OnLButtonDown(UINT nFlags, CPoint point)
 			_handle_hit = handle;
 			object_selected = true;
 		}
-		else
+		else if ((nFlags & MK_CONTROL) != MK_CONTROL)
 		{
 			(*iter)->Select(false);
 		}

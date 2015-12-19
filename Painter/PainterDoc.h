@@ -44,6 +44,8 @@ public:
 public:
 	virtual ~CPainterDoc();
 	const std::vector<std::shared_ptr<CShape>>& GetShapes() const;
+	std::vector<std::shared_ptr<CShape>>& Shapes();
+
 	void AddShape(std::shared_ptr<CShape> shape);
 
 #ifdef _DEBUG

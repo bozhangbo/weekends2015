@@ -189,6 +189,11 @@ const vector<shared_ptr<CShape>>& CPainterDoc::GetShapes() const
 	return _shapes;
 }
 
+std::vector<std::shared_ptr<CShape>>& CPainterDoc::Shapes()
+{
+	return _shapes;
+}
+
 void CPainterDoc::AddShape(shared_ptr<CShape> shape)
 {
 	_shapes.push_back(shape);

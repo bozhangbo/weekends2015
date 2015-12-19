@@ -101,6 +101,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CompositShape.h" />
     <ClInclude Include="Ellipse.h" />
     <ClInclude Include="EllipseTool.h" />
     <ClInclude Include="Line.h" />
@@ -122,6 +123,7 @@
     <ClInclude Include="Tool.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CompositShape.cpp" />
     <ClCompile Include="Ellipse.cpp" />
     <ClCompile Include="EllipseTool.cpp" />
     <ClCompile Include="Line.cpp" />
