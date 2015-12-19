@@ -64,7 +64,8 @@ void CPolygon::SetPoint(unsigned int index, Gdiplus::Point point)
 {
 	if (index < _points.size())
 	{
-		_points[index] = point; 
+		_points[index] = point;
+		SetRect();
 	}
 }
 
@@ -72,3 +73,35 @@ unsigned int CPolygon::GetPointCount() const
 {
 	return _points.size();
 }
+
+void CPolygon::SetRect()
+{
+	Gdiplus::Point point1(_points[1].X, _points[1].Y);
+	Gdiplus::Point point2(_points[1].X, _points[1].Y);
+
+	for (int i = 0; i < _points.size(); i++)
+	{
+		if (point2.X < _points[i].X)
+		{
+			point2.X = _points[i].X;
+		}
+
+		if (point2.Y < _points[i].Y)
+		{
+			point2.Y = _points[i].Y;
+		}
+
+		if (point1.X > _points[i].X)
+		{
+			point1.X = _points[i].X;
+		}
+
+		if (point1.Y > _points[i].Y)
+		{
+			point1.Y = _points[i].Y;
+		}
+	}
+
+	CShape::SetRect(Gdiplus::Rect(point1.X, point1.Y, abs(point2.X - point1.X), abs(point2.Y - point1.Y)));
+}
+

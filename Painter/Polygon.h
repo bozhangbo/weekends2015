@@ -18,6 +18,8 @@ public:
 	void AddPoint(Gdiplus::Point point);
 	void SetPoint(unsigned int index, Gdiplus::Point point);
 	unsigned int GetPointCount() const;
+	void SetRect();
+
 private:
 	std::vector<Gdiplus::Point> _points;
 };
