@@ -232,10 +232,12 @@ void CPainterView::OnLButtonUp(UINT nFlags, CPoint point)
 void CPainterView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	ASSERT(_tools[_tool]);
-	_tools[_tool]->OnMouseMove(nFlags, point);
 
-	Invalidate(FALSE);
-	UpdateWindow();
+	if (_tools[_tool]->OnMouseMove(nFlags, point))
+	{
+		Invalidate(FALSE);
+		UpdateWindow();
+	}
 
 	CView::OnMouseMove(nFlags, point);
 }

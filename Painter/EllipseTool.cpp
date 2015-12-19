@@ -16,7 +16,7 @@ CEllipseTool::~CEllipseTool()
 {
 }
 
-void CEllipseTool::OnLButtonDown(UINT nFlags, CPoint point)
+bool CEllipseTool::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	_down_point = point;
 	_ellipse = shared_ptr<CEllipse>(new CEllipse(Gdiplus::Point(point.x, point.y),
@@ -24,9 +24,11 @@ void CEllipseTool::OnLButtonDown(UINT nFlags, CPoint point)
 
 	_ellipse->SetBorderColor(GetBorderColor());
 	_ellipse->SetFillColor(GetFillColor());
+
+	return true;
 }
 
-void CEllipseTool::OnMouseMove(UINT nFlags, CPoint point)
+bool CEllipseTool::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if ((nFlags & MK_LBUTTON) == MK_LBUTTON && _ellipse)
 	{
@@ -34,7 +36,11 @@ void CEllipseTool::OnMouseMove(UINT nFlags, CPoint point)
 		rect.NormalizeRect();
 
 		_ellipse->SetRect(Gdiplus::Rect(rect.left, rect.top, rect.Width(), rect.Height()));
+
+		return true;
 	}
+
+	return false;
 }
 
 std::shared_ptr<CShape> CEllipseTool::GetShape()
@@ -42,7 +48,9 @@ std::shared_ptr<CShape> CEllipseTool::GetShape()
 	return _ellipse;
 }
 
-void CEllipseTool::OnLButtonUp(UINT nFlags, CPoint point)
+bool CEllipseTool::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	s_shape_user->AddShape(_ellipse);
+
+	return false;
 }

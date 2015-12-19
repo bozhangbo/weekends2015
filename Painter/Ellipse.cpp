@@ -52,3 +52,4 @@ int CEllipse::HitTest(const Gdiplus::Point& point)
 	}
 }
 
+

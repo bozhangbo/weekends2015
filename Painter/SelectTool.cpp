@@ -6,7 +6,8 @@
 using namespace std;
 using namespace Gdiplus;
 
-CSelectTool::CSelectTool()
+CSelectTool::CSelectTool() :
+	_handle_hit(HandleNone)
 {
 }
 
@@ -15,26 +16,51 @@ CSelectTool::~CSelectTool()
 {
 }
 
-void CSelectTool::OnLButtonDown(UINT nFlags, CPoint point)
+bool CSelectTool::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	const auto & shapes = s_shape_user->Shapes();
-	for (auto iter = shapes.begin(); iter != shapes.end(); ++iter)
-	{
-		(*iter)->Select(false);
-	}
 
+	bool object_selected = false;
 	for (auto iter = shapes.rbegin(); iter != shapes.rend(); ++iter)
 	{
-		if ((*iter)->HitTest(Point(point.x, point.y)) != 0)
+		auto handle = (*iter)->HitTest(Point(point.x, point.y));
+		if (handle != HandleNone && !object_selected)
 		{
 			(*iter)->Select(true);
-			break;
+			_handle_hit = handle;
+			object_selected = true;
+		}
+		else
+		{
+			(*iter)->Select(false);
 		}
 	}
+
+	_last_point = point;
+
+	return true;
 }
 
-void CSelectTool::OnMouseMove(UINT nFlags, CPoint point)
+bool CSelectTool::OnMouseMove(UINT nFlags, CPoint point)
 {
+	if ((nFlags & MK_LBUTTON) == MK_LBUTTON)
+	{
+		CSize offset = point - _last_point;
+		const auto & shapes = s_shape_user->Shapes();
+		for (auto iter = shapes.begin(); iter != shapes.end(); ++iter)
+		{
+			if ((*iter)->IsSelected())
+			{
+				(*iter)->Move(_handle_hit, offset.cx, offset.cy);
+			}
+		}
+
+		_last_point = point;
+
+		return true;
+	}
+
+	return false;
 }
 
 std::shared_ptr<CShape> CSelectTool::GetShape()

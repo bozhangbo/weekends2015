@@ -7,11 +7,13 @@ public:
 	CSelectTool();
 	virtual ~CSelectTool();
 
-	virtual void OnLButtonDown(UINT nFlags, CPoint point) override;
-	virtual void OnMouseMove(UINT nFlags, CPoint point) override;
+	virtual bool OnLButtonDown(UINT nFlags, CPoint point) override;
+	virtual bool OnMouseMove(UINT nFlags, CPoint point) override;
 
 	virtual std::shared_ptr<CShape> GetShape() override;
 
-
+private:
+	CPoint _last_point;
+	int _handle_hit;
 };
 

@@ -14,13 +14,15 @@ public:
 	virtual void Draw(Gdiplus::Graphics& graphics);
 	virtual void Save(CArchive& ar);
 	virtual void Load(CArchive& ar);
+	virtual void OnSetRect();
 
 	void AddPoint(Gdiplus::Point point);
 	void SetPoint(unsigned int index, Gdiplus::Point point);
 	unsigned int GetPointCount() const;
 	void SetRect();
-
+	void Finalize();
 private:
 	std::vector<Gdiplus::Point> _points;
+	std::vector<Gdiplus::PointF> _relative_points;
 };
 

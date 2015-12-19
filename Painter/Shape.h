@@ -10,6 +10,18 @@ enum ShapeType
 	ShapePolygon = 4,
 };
 
+const int HandleNone = 0;
+const int HandleMove = 1;
+const int HandleRotate = 2;
+const int HandleTopLeft = 3;
+const int HandleTopMiddle = 4;
+const int HandleTopRight = 5;
+const int HandleMiddleLeft = 6;
+const int HandleMiddleRight = 7;
+const int HandleBottomLeft = 8;
+const int HandleBottomMiddle = 9;
+const int HandleBottomRight = 10;
+
 class CShape
 {
 public:
@@ -20,6 +32,9 @@ public:
 	virtual void Save(CArchive& ar);
 	virtual void Load(CArchive& ar);
 	virtual int HitTest(const Gdiplus::Point& point);
+	virtual void Move(int handle_to_move, int cx, int cy);
+	virtual void OnSetRect(){}
+
 	void SetRect(const Gdiplus::Rect& rect);
 	const Gdiplus::Rect& GetRect() const;
 	void SetBorderColor(Gdiplus::Color border_color);
@@ -32,9 +47,12 @@ public:
 protected:
 	void DrawBorder(Gdiplus::Graphics& graphics);
 	void DrawHandle(Gdiplus::Graphics& graphics, Gdiplus::Pen&pen, INT x, INT y);
+	bool HandleTest(const Gdiplus::Point& center, const Gdiplus::Point& point);
+
 	Gdiplus::Rect _rect;
 	Gdiplus::Color _border_color;
 	Gdiplus::Color _fill_color;
 	bool _selected;
+	const int HANDLE_SIZE = 7;
 };
 

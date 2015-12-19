@@ -10,10 +10,9 @@ public:
 	CPolygonTool();
 	virtual ~CPolygonTool();
 
-	virtual void OnLButtonDown(UINT nFlags, CPoint point);
-	virtual void OnMouseMove(UINT nFlags, CPoint point);
-
-	virtual void OnLButtonDoubleClick(UINT nFlags, CPoint point);
+	virtual bool OnLButtonDown(UINT nFlags, CPoint point);
+	virtual bool OnMouseMove(UINT nFlags, CPoint point);
+	virtual bool OnLButtonDoubleClick(UINT nFlags, CPoint point);
 
 	virtual std::shared_ptr<CShape> GetShape();
 

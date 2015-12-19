@@ -17,11 +17,11 @@ public:
 	CTool();
 	virtual ~CTool();
 
-	virtual void OnLButtonDown(UINT nFlags, CPoint point) = 0;
-	virtual void OnMouseMove(UINT nFlags, CPoint point) = 0;
-	virtual void OnLButtonUp(UINT nFlags, CPoint point);
+	virtual bool OnLButtonDown(UINT nFlags, CPoint point) = 0;
+	virtual bool OnMouseMove(UINT nFlags, CPoint point) = 0;
+	virtual bool OnLButtonUp(UINT nFlags, CPoint point);
 
-	virtual void OnLButtonDoubleClick(UINT nFlags, CPoint point);
+	virtual bool OnLButtonDoubleClick(UINT nFlags, CPoint point);
 
 	virtual std::shared_ptr<CShape> GetShape() = 0;
 

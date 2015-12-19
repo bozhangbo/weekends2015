@@ -14,7 +14,7 @@ CPolygonTool::~CPolygonTool()
 {
 }
 
-void CPolygonTool::OnLButtonDown(UINT nFlags, CPoint point)
+bool CPolygonTool::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	if (!_polygon)
 	{
@@ -29,20 +29,31 @@ void CPolygonTool::OnLButtonDown(UINT nFlags, CPoint point)
 
 	_polygon->SetBorderColor(GetBorderColor());
 	_polygon->SetFillColor(GetFillColor());
+
+	return true;
 }
 
-void CPolygonTool::OnMouseMove(UINT nFlags, CPoint point)
+bool CPolygonTool::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if (_polygon)
 	{
 		_polygon->SetPoint(_polygon->GetPointCount() - 1, Point(point.x, point.y));
+		return true;
 	}
+
+	return false;
 }
 
-void CPolygonTool::OnLButtonDoubleClick(UINT nFlags, CPoint point)
+bool CPolygonTool::OnLButtonDoubleClick(UINT nFlags, CPoint point)
 {
-	s_shape_user->AddShape(_polygon);
-	_polygon.reset();
+	if (_polygon)
+	{
+		_polygon->Finalize();
+		s_shape_user->AddShape(_polygon);
+		_polygon.reset();
+	}
+
+	return false;
 }
 
 std::shared_ptr<CShape> CPolygonTool::GetShape()
