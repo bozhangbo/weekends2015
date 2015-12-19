@@ -29,8 +29,12 @@ void CLineTool::OnMouseMove(UINT nFlags, CPoint point)
 	{
 		_line->SetPoint2(Point(point.x, point.y));
 
-		Gdiplus::Point point1 = _line->GetPoint1();
-		_line->SetRect(Gdiplus::Rect(point1.X, point1.Y, abs(point.x - point1.X), abs(point.y - point1.Y)));
+		Gdiplus::Point p1 = _line->GetPoint1();
+		CPoint point1(p1.X, p1.Y);
+		CRect rect(point1, point);
+		rect.NormalizeRect();
+
+		_line->SetRect(Gdiplus::Rect(rect.left, rect.top, rect.Width(), rect.Height()));
 	}
 }
 
