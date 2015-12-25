@@ -15,19 +15,19 @@ CRectangle::CRectangle(INT x, INT y, INT width, INT height)
 	_size.Height = height;
 }
 
-
 CRectangle::~CRectangle()
 {
 }
 
 void CRectangle::Draw(Gdiplus::Graphics& graphics)
 {
-	// SolidBrush brush(Color::Black);
-	SolidBrush brush(_fill_color);
+	SolidBrush brush(GetFillColor());
 	graphics.FillRectangle(&brush, _rect);
 
 	Pen pen(_border_color, 5);
 	graphics.DrawRectangle(&pen, _rect);
+
+	DrawBorder(graphics);
 }
 
 void CRectangle::Save(CArchive& ar)

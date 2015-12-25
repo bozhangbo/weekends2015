@@ -11,11 +11,13 @@ public:
 	CEllipseTool();
 	virtual ~CEllipseTool();
 
-	virtual void OnLButtonDown(UINT nFlags, CPoint point);
-	virtual void OnMouseMove(UINT nFlags, CPoint point);
+	virtual bool OnLButtonDown(UINT nFlags, CPoint point);
+	virtual bool OnMouseMove(UINT nFlags, CPoint point);
+	virtual bool OnLButtonUp(UINT nFlags, CPoint point);
 	virtual std::shared_ptr<CShape> GetShape();
 
 private:
 	std::shared_ptr<CEllipse> _ellipse;
+	CPoint _down_point;
 };
 

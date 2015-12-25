@@ -30,6 +30,10 @@
 #include "LineTool.h"
 #include "RectangleTool.h"
 #include "EllipseTool.h"
+#include "MainFrm.h"
+#include "PolygonTool.h"
+#include "SelectTool.h"
+#include "CompositShape.h"
 
 using namespace std;
 using namespace Gdiplus;
@@ -62,6 +66,12 @@ BEGIN_MESSAGE_MAP(CPainterView, CView)
 	ON_UPDATE_COMMAND_UI(ID_BUTTON_ELLIPSE, &CPainterView::OnUpdateButtonEllipse)
 	ON_COMMAND(ID_BUTTON_BORDER_COLOR, &CPainterView::OnButtonBorderColor)
 	ON_COMMAND(ID_BUTTON_FILL_COLOR, &CPainterView::OnButtonFillColor)
+	ON_WM_LBUTTONDBLCLK()
+	ON_COMMAND(ID_BUTTON_POLYGON, &CPainterView::OnButtonPolygon)
+	ON_UPDATE_COMMAND_UI(ID_BUTTON_POLYGON, &CPainterView::OnUpdateButtonPolygon)
+	ON_COMMAND(ID_BUTTON_SELECT, &CPainterView::OnButtonSelect)
+	ON_UPDATE_COMMAND_UI(ID_BUTTON_SELECT, &CPainterView::OnUpdateButtonSelect)
+	ON_COMMAND(ID_BUTTON_COMBINE, &CPainterView::OnButtonCombine)
 END_MESSAGE_MAP()
 
 // CPainterView construction/destruction
@@ -69,9 +79,13 @@ END_MESSAGE_MAP()
 CPainterView::CPainterView() :
 	_tool(ToolTypeLine)
 {
+	CTool::SetShapeUser(this);
+
+	_tools.insert(make_pair(ToolTypeSelect, shared_ptr<CSelectTool>(new CSelectTool)));
 	_tools.insert(make_pair(ToolTypeLine, shared_ptr<CLineTool>(new CLineTool)));
 	_tools.insert(make_pair(ToolTypeRectangle, shared_ptr < CRectangleTool>(new CRectangleTool)));
 	_tools.insert(make_pair(ToolTypeEllipse, shared_ptr < CEllipseTool>(new CEllipseTool)));
+	_tools.insert(make_pair(ToolTypePolygon, shared_ptr<CPolygonTool>(new CPolygonTool)));
 }
 
 CPainterView::~CPainterView()
@@ -201,24 +215,6 @@ void CPainterView::OnLButtonDown(UINT nFlags, CPoint point)
 	ASSERT(_tools[_tool]);
 	_tools[_tool]->OnLButtonDown(nFlags, point);
 
-// 	switch (_tool)
-// 	{
-// 	case ToolTypeLine:
-// 	{
-// 		_temp_shape = shared_ptr<CLine>(new CLine(Point(point.x, point.y),
-// 			Point(point.x, point.y)));
-// 		break;
-// 	}
-// 	case ToolTypeRectangle:
-// 		_temp_shape = shared_ptr<CRectangle>(new CRectangle(point.x, point.y, 0, 0));
-// 		break;
-// 	case ToolTypeEllipse:
-// 		_temp_shape = shared_ptr<CEllipse>(new CEllipse(Point(point.x, point.y), Point(point.x, point.y)));
-// 		break;
-// 	default:
-// 		ASSERT(0);
-// 	}
-
 	Invalidate(FALSE);
 	UpdateWindow();
 
@@ -228,14 +224,8 @@ void CPainterView::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CPainterView::OnLButtonUp(UINT nFlags, CPoint point)
 {
-	auto doc = GetDocument();
-	if (doc == nullptr)
-		return;
-
-	if (_tools[_tool]->GetShape())
-	{
-		doc->AddShape(_tools[_tool]->GetShape());
-	} 
+	ASSERT(_tools[_tool]);
+	_tools[_tool]->OnLButtonUp(nFlags, point);
 
 	CView::OnLButtonUp(nFlags, point);
 }
@@ -244,10 +234,12 @@ void CPainterView::OnLButtonUp(UINT nFlags, CPoint point)
 void CPainterView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	ASSERT(_tools[_tool]);
-	_tools[_tool]->OnMouseMove(nFlags, point);
 
-	Invalidate(FALSE);
-	UpdateWindow();
+	if (_tools[_tool]->OnMouseMove(nFlags, point))
+	{
+		Invalidate(FALSE);
+		UpdateWindow();
+	}
 
 	CView::OnMouseMove(nFlags, point);
 }
@@ -279,19 +271,120 @@ void CPainterView::OnButtonEllipse()
 }
 
 
+
 void CPainterView::OnUpdateButtonEllipse(CCmdUI *pCmdUI)
 {
 	pCmdUI->SetCheck(_tool == ToolTypeEllipse);
 }
 
 
+void CPainterView::OnButtonPolygon()
+{
+	_tool = ToolTypePolygon;
+}
+
+
+void CPainterView::OnUpdateButtonPolygon(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(_tool == ToolTypePolygon);
+}
+
+void CPainterView::OnButtonSelect()
+{
+	_tool = ToolTypeSelect;
+}
+
+void CPainterView::OnUpdateButtonSelect(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(_tool == ToolTypeSelect);
+}
+
 void CPainterView::OnButtonBorderColor()
 {
-	// TODO: Add your command handler code here
+	auto main_frame = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
+	ASSERT(main_frame != nullptr);
+
+	auto& ribbon = main_frame->GetRibbon();
+
+	auto color_button = dynamic_cast<CMFCRibbonColorButton*>(ribbon.FindByID(ID_BUTTON_BORDER_COLOR));
+	auto color = color_button->GetColor();
+
+	_tools[_tool]->SetBorderColor(Gdiplus::Color(255, 
+		GetRValue(color), GetGValue(color), GetBValue(color)));
 }
 
 
 void CPainterView::OnButtonFillColor()
 {
-	// TODO: Add your command handler code here
+	auto main_frame = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
+	ASSERT(main_frame != nullptr);
+
+	auto& ribbon = main_frame->GetRibbon();
+
+	auto color_button = dynamic_cast<CMFCRibbonColorButton*>(ribbon.FindByID(ID_BUTTON_FILL_COLOR));
+	auto color = color_button->GetColor();
+
+	_tools[_tool]->SetFillColor(Gdiplus::Color(255,
+		GetRValue(color), GetGValue(color), GetBValue(color)));
+}
+
+
+void CPainterView::OnLButtonDblClk(UINT nFlags, CPoint point)
+{
+	ASSERT(_tools[_tool]);
+	_tools[_tool]->OnLButtonDoubleClick(nFlags, point);
+
+	CView::OnLButtonDblClk(nFlags, point);
+}
+
+bool CPainterView::AddShape(std::shared_ptr<CShape> shape)
+{
+	if (!shape)
+		return false;
+
+	auto doc = GetDocument();
+	if (doc == nullptr)
+		return false;
+
+	doc->AddShape(shape);
+
+	return true;
+}
+
+const std::vector<std::shared_ptr<CShape>> & CPainterView::Shapes() const
+{
+	auto doc = GetDocument();
+	ASSERT(doc != nullptr);
+
+	return doc->GetShapes();
+}
+
+void CPainterView::OnButtonCombine()
+{
+	auto doc = GetDocument();
+	ASSERT(doc != nullptr);
+
+	auto& shapes = doc->Shapes();
+
+	shared_ptr<CCompositShape> composite(new CCompositShape);
+
+	for (auto iter = shapes.begin(); iter != shapes.end(); )
+	{
+		if ((*iter)->IsSelected())
+		{
+			(*iter)->Select(false);
+			composite->AddShape(*iter);
+			iter = shapes.erase(iter);
+		}
+		else
+		{
+			++iter;
+		}
+	}
+	composite->UpdateRelativePostions();
+	composite->Select(true);
+	shapes.push_back(composite);
+
+	Invalidate(FALSE);
+	UpdateWindow();
 }

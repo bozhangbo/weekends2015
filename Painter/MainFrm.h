@@ -32,6 +32,10 @@ public:
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 
+	CMFCRibbonBar& GetRibbon(){
+		return m_wndRibbonBar;
+	}
+
 // Implementation
 public:
 	virtual ~CMainFrame();

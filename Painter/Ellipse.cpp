@@ -17,8 +17,13 @@ CEllipse::~CEllipse()
 
 void CEllipse::Draw(Gdiplus::Graphics& graphics)
 {
-	Gdiplus::Pen pen(Gdiplus::Color::Red);
+	Gdiplus::SolidBrush brush(GetFillColor());
+	graphics.FillEllipse(&brush, _rect);
+
+	Gdiplus::Pen pen(GetBorderColor());
 	graphics.DrawEllipse(&pen, _rect);
+
+	DrawBorder(graphics);
 }
 
 void CEllipse::Save(CArchive& ar)
@@ -27,4 +32,24 @@ void CEllipse::Save(CArchive& ar)
 
 	CShape::Save(ar);
 }
+
+int CEllipse::HitTest(const Gdiplus::Point& point)
+{
+	double a = _rect.Width / 2;
+	double b = _rect.Height / 2;
+	double m = _rect.GetLeft() + a;
+	double n = _rect.GetTop() + b;
+
+	double ellipse_value = (((point.X - m) / a) * ((point.X - m) / a) + ((point.Y - n) / b) * ((point.Y - n) / b));
+
+	if (ellipse_value == 1 || ellipse_value < 1)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 
