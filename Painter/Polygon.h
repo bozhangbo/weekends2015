@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <gdiplus.h>
+#include <memory>
 
 class CPolygon :
 	public CShape
@@ -24,8 +25,15 @@ public:
 
 	virtual void OnEndMove() override;
 
+	virtual void DrawBorder(Gdiplus::Graphics& graphics) override;
+
+	virtual int HitTest(const Gdiplus::Point& point) override;
+
+	virtual void Move(int handle_to_move, int cx, int cy) override;
+
 private:
 	std::vector<Gdiplus::Point> _points;
 	std::vector<Gdiplus::PointF> _relative_points;
+    Gdiplus::Point _handle_point;
 };
 
