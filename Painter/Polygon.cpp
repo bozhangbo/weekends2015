@@ -146,3 +146,55 @@ void CPolygon::OnEndMove()
 	NormalizeRect(_rect);
 }
 
+void CPolygon::DrawBorder(Gdiplus::Graphics& graphics)
+{
+
+	Pen pen(Color::Black);
+	if (_selected)
+	{
+		for (size_t i = 0; i < _points.size(); ++i)
+		{
+			DrawHandle(graphics, pen, _points[i].X, _points[i].Y);
+		}
+	}
+
+	CShape::DrawBorder(graphics);
+}
+
+int CPolygon::HitTest(const Gdiplus::Point& point)
+{
+	if (_selected)
+	{
+		for (size_t i = 0; i < _points.size(); ++i)
+		{
+			if (HandleTest(Gdiplus::Point(_points[i].X, _points[i].Y), point))
+			{
+				_handle_point.X = _points[i].X;
+				_handle_point.Y = _points[i].Y;
+				return HandlePoint;
+			}		
+		}
+	}
+
+	CShape::HitTest(point);
+}
+
+void CPolygon::Move(int handle_to_move, int cx, int cy)
+{
+	if (handle_to_move == HandlePoint)
+	{
+		for (size_t i = 0; i < _points.size(); ++i)
+		{
+			if (_points[i].X == _handle_point.X && _points[i].Y == _handle_point.Y)
+			{
+				_points[i].X += cx;
+				_points[i].Y += cy;
+			}
+		}
+	}
+
+	OnSetRect();
+
+	CShape::Move(handle_to_move, cx, cy);
+}
+
