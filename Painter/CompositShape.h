@@ -20,6 +20,7 @@ public:
 
 	virtual int HitTest(const Gdiplus::Point& point) override;
 
+	virtual void OnEndMove() override;
 	virtual void OnSetRect() override;
 	void Ungroup(std::vector<std::shared_ptr<CShape>>& parent_container);
 

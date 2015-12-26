@@ -118,3 +118,25 @@ void CCompositShape::Ungroup(std::vector<std::shared_ptr<CShape>>& parent_contai
 {
 	copy(_children.begin(), _children.end(), back_inserter(parent_container));
 }
+
+void CCompositShape::OnEndMove()
+{
+	if (_rect.Width < 0)
+	{
+		for (size_t i = 0; i < _relative_postions.size(); ++i)
+		{
+			_children[i]->OnEndMove();
+			_relative_postions[i].X = (1.0 - _relative_postions[i].X) - _relative_postions[i].Width;
+		}
+	}
+	if (_rect.Height < 0)
+	{
+		for (size_t i = 0; i < _relative_postions.size(); ++i)
+		{
+			_children[i]->OnEndMove();
+			_relative_postions[i].Y = (1.0 - _relative_postions[i].Y) - _relative_postions[i].Height;
+		}
+	}
+
+	NormalizeRect(_rect);
+}
