@@ -253,4 +253,25 @@ bool CPainterDoc::Ungroup()
 
 	return true;
 }
+
+bool CPainterDoc::Cut()
+{
+	for (auto iter = _shapes.begin(); iter != _shapes.end();)
+	{
+		if ((*iter)->IsSelected())
+		{
+			(*iter)->Select(false);
+			iter = _shapes.erase(iter);
+		}
+		else
+		{
+			++iter;
+		}
+	}
+	
+
+
+	return true;
+}
+
 // CPainterDoc commands

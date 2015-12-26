@@ -403,5 +403,13 @@ void CPainterView::OnUpdateButtonUngroup(CCmdUI *pCmdUI)
 
 void CPainterView::OnEditCut()
 {
+	auto doc = GetDocument();
+	ASSERT(doc != nullptr);
+
+	doc->Cut();
+
+	Invalidate(FALSE);
+	UpdateWindow();
+	
 	// TODO: Add your command handler code here
 }

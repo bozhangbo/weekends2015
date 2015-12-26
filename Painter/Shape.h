@@ -35,6 +35,7 @@ public:
 	virtual void Move(int handle_to_move, int cx, int cy);
 	virtual void OnEndMove();
 	virtual void OnSetRect(){}
+	
 
 	void SetRect(const Gdiplus::Rect& rect);
 	const Gdiplus::Rect& GetRect() const;
