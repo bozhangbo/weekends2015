@@ -7,6 +7,14 @@ CLine::CLine()
 {
 }
 
+
+void CLine::OnSetRect()
+{
+	SetPoint1(Gdiplus::Point(_rect.GetLeft(), _rect.GetTop()));
+	SetPoint2(Gdiplus::Point(_rect.GetRight(), _rect.GetBottom()));
+
+}
+
 CLine::CLine(const Gdiplus::Point& point1, const Gdiplus::Point& point2)
 {
 	_point1 = point1;
@@ -41,5 +49,25 @@ void CLine::Load(CArchive& ar)
 
 int CLine::HitTest(const Gdiplus::Point& point)
 {
-	return __super::HitTest(point);
+	double a = abs(point.X - _point1.X);
+	double b = abs(point.Y - _point1.Y);
+	double c = abs(point.X - _point2.X);
+	double d = abs(point.Y - _point2.Y);
+	double w = abs(_point2.X - _point1.X);
+	double h = abs(_point2.Y - _point1.Y);
+
+	double line_value = sqrt(a*a + b*b) + sqrt(c*c + d*d);
+	double line_value2 = sqrt(w*w + h*h);
+	double s = abs(line_value - line_value2);
+
+	
+	if (s>=1 && !_selected)
+	{
+		return HandleNone;
+	}
+	else
+	{
+		return CShape::HitTest(point);
+	}
+	
 }
