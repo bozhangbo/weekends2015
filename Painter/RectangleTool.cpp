@@ -14,7 +14,7 @@ CRectangleTool::~CRectangleTool()
 {
 }
 
-void CRectangleTool::OnLButtonDown(UINT nFlags, CPoint point)
+bool CRectangleTool::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	_down_point = point;
 
@@ -22,9 +22,11 @@ void CRectangleTool::OnLButtonDown(UINT nFlags, CPoint point)
 		0,0));
 	_rect->SetBorderColor(GetBorderColor());
 	_rect->SetFillColor(GetFillColor());
+
+	return true;
 }
 
-void CRectangleTool::OnMouseMove(UINT nFlags, CPoint point)
+bool CRectangleTool::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if ((nFlags & MK_LBUTTON) == MK_LBUTTON && _rect)
 	{
@@ -33,7 +35,11 @@ void CRectangleTool::OnMouseMove(UINT nFlags, CPoint point)
 
 		Rect rect(screen_rect.left, screen_rect.top, screen_rect.Width(), screen_rect.Height());
 		_rect->SetRect(rect);
+
+		return true;
 	}
+
+	return false;
 }
 
 std::shared_ptr<CShape> CRectangleTool::GetShape()
@@ -41,8 +47,10 @@ std::shared_ptr<CShape> CRectangleTool::GetShape()
 	return _rect;
 }
 
-void CRectangleTool::OnLButtonUp(UINT nFlags, CPoint point)
+bool CRectangleTool::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	ASSERT(s_shape_user != nullptr);
 	s_shape_user->AddShape(_rect);
+
+	return false;
 }

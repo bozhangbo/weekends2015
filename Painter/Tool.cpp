@@ -34,9 +34,9 @@ void CTool::SetFillColor(Gdiplus::Color color)
 	_fill_color = color;
 }
 
-void CTool::OnLButtonDoubleClick(UINT nFlags, CPoint point)
+bool CTool::OnLButtonDoubleClick(UINT nFlags, CPoint point)
 {
-
+	return false;
 }
 
 void CTool::SetShapeUser(IShapeUser * shape_user)
@@ -45,7 +45,7 @@ void CTool::SetShapeUser(IShapeUser * shape_user)
 	s_shape_user = shape_user;
 }
 
-void CTool::OnLButtonUp(UINT nFlags, CPoint point)
+bool CTool::OnLButtonUp(UINT nFlags, CPoint point)
 {
-
+	return false;
 }

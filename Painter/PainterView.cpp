@@ -70,6 +70,11 @@ BEGIN_MESSAGE_MAP(CPainterView, CView)
 	ON_UPDATE_COMMAND_UI(ID_BUTTON_POLYGON, &CPainterView::OnUpdateButtonPolygon)
 	ON_COMMAND(ID_BUTTON_SELECT, &CPainterView::OnButtonSelect)
 	ON_UPDATE_COMMAND_UI(ID_BUTTON_SELECT, &CPainterView::OnUpdateButtonSelect)
+	ON_COMMAND(ID_BUTTON_COMBINE, &CPainterView::OnButtonGroup)
+	ON_COMMAND(ID_BUTTON_UNGROUP, &CPainterView::OnButtonUngroup)
+	ON_UPDATE_COMMAND_UI(ID_BUTTON_UNGROUP, &CPainterView::OnUpdateButtonUngroup)
+	ON_UPDATE_COMMAND_UI(ID_BUTTON_COMBINE, &CPainterView::OnUpdateButtonGroup)
+	ON_COMMAND(ID_EDIT_CUT, &CPainterView::OnEditCut)
 END_MESSAGE_MAP()
 
 // CPainterView construction/destruction
@@ -223,7 +228,12 @@ void CPainterView::OnLButtonDown(UINT nFlags, CPoint point)
 void CPainterView::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	ASSERT(_tools[_tool]);
-	_tools[_tool]->OnLButtonUp(nFlags, point);
+
+	if (_tools[_tool]->OnLButtonUp(nFlags, point))
+	{
+		Invalidate(FALSE);
+		UpdateWindow();
+	}
 
 	CView::OnLButtonUp(nFlags, point);
 }
@@ -232,10 +242,12 @@ void CPainterView::OnLButtonUp(UINT nFlags, CPoint point)
 void CPainterView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	ASSERT(_tools[_tool]);
-	_tools[_tool]->OnMouseMove(nFlags, point);
 
-	Invalidate(FALSE);
-	UpdateWindow();
+	if (_tools[_tool]->OnMouseMove(nFlags, point))
+	{
+		Invalidate(FALSE);
+		UpdateWindow();
+	}
 
 	CView::OnMouseMove(nFlags, point);
 }
@@ -355,3 +367,41 @@ const std::vector<std::shared_ptr<CShape>> & CPainterView::Shapes() const
 	return doc->GetShapes();
 }
 
+void CPainterView::OnButtonGroup()
+{
+	auto doc = GetDocument();
+	ASSERT(doc != nullptr);
+	doc->Group();
+
+	Invalidate(FALSE);
+	UpdateWindow();
+}
+
+void CPainterView::OnUpdateButtonGroup(CCmdUI *pCmdUI)
+{
+	// TODO: Add your command update UI handler code here
+}
+
+void CPainterView::OnButtonUngroup()
+{
+	auto doc = GetDocument();
+	ASSERT(doc != nullptr);
+
+	doc->Ungroup();
+
+	Invalidate(FALSE);
+	UpdateWindow();
+}
+
+
+void CPainterView::OnUpdateButtonUngroup(CCmdUI *pCmdUI)
+{
+	// TODO: Add your command update UI handler code here
+}
+
+
+
+void CPainterView::OnEditCut()
+{
+	// TODO: Add your command handler code here
+}

@@ -76,10 +76,14 @@ unsigned int CPolygon::GetPointCount() const
 
 void CPolygon::SetRect()
 {
+}
+
+void CPolygon::Finalize()
+{
 	Gdiplus::Point point1(_points[1].X, _points[1].Y);
 	Gdiplus::Point point2(_points[1].X, _points[1].Y);
 
-	for (int i = 0; i < _points.size(); i++)
+	for (size_t i = 0; i < _points.size(); i++)
 	{
 		if (point2.X < _points[i].X)
 		{
@@ -102,6 +106,43 @@ void CPolygon::SetRect()
 		}
 	}
 
-	CShape::SetRect(Gdiplus::Rect(point1.X, point1.Y, abs(point2.X - point1.X), abs(point2.Y - point1.Y)));
+	_rect = Rect(point1.X, point1.Y, abs(point2.X - point1.X), abs(point2.Y - point1.Y));
+
+	_relative_points.resize(_points.size());
+	for (size_t i = 0; i < _points.size(); ++i)
+	{
+		_relative_points[i].X = (_points[i].X - _rect.X) / (REAL)_rect.Width;
+		_relative_points[i].Y = (_points[i].Y - _rect.Y) / (REAL)_rect.Height;
+	}
+}
+
+void CPolygon::OnSetRect()
+{
+	_points.resize(_relative_points.size());
+	for (size_t i = 0; i < _relative_points.size(); ++i)
+	{
+		_points[i].X = int(_relative_points[i].X * _rect.Width + _rect.X);
+		_points[i].Y = int(_relative_points[i].Y * _rect.Height + _rect.Y);
+	}
+}
+
+void CPolygon::OnEndMove()
+{
+	if (_rect.Width < 0)
+	{
+		for (size_t i = 0; i < _relative_points.size(); ++i)
+		{
+			_relative_points[i].X = 1.0 - _relative_points[i].X;
+		}
+	}
+	if (_rect.Height < 0)
+	{
+		for (size_t i = 0; i < _relative_points.size(); ++i)
+		{
+			_relative_points[i].Y = 1.0 - _relative_points[i].Y;
+		}
+	}
+
+	NormalizeRect(_rect);
 }
 

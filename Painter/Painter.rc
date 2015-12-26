@@ -482,6 +482,12 @@ END
 STRINGTABLE
 BEGIN
     ID_BUTTON_ELLIPSE       "Draw ellipse."
+    ID_BUTTON_COMBINE       "Group selected objects."
+END
+
+STRINGTABLE
+BEGIN
+    ID_BUTTON_UNGROUP       "Ungroup a composite object."
 END
 
 #endif    // English (United States) resources

@@ -97,6 +97,11 @@ public:
 	afx_msg void OnUpdateButtonSelect(CCmdUI *pCmdUI);
 
 	virtual const std::vector<std::shared_ptr<CShape>> & Shapes() const override;
+	afx_msg void OnButtonGroup();
+	afx_msg void OnButtonUngroup();
+	afx_msg void OnUpdateButtonUngroup(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateButtonGroup(CCmdUI *pCmdUI);
+	afx_msg void OnEditCut();
 };
 
 #ifndef _DEBUG  // debug version in PainterView.cpp

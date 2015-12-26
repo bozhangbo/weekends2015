@@ -35,6 +35,9 @@ public:
 public:
 	virtual BOOL OnNewDocument();
 	virtual void Serialize(CArchive& ar);
+	bool Group();
+	bool Ungroup();
+
 #ifdef SHARED_HANDLERS
 	virtual void InitializeSearchContent();
 	virtual void OnDrawThumbnail(CDC& dc, LPRECT lprcBounds);
@@ -44,6 +47,8 @@ public:
 public:
 	virtual ~CPainterDoc();
 	const std::vector<std::shared_ptr<CShape>>& GetShapes() const;
+	std::vector<std::shared_ptr<CShape>>& Shapes();
+
 	void AddShape(std::shared_ptr<CShape> shape);
 
 #ifdef _DEBUG

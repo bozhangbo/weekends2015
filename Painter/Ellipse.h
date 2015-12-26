@@ -14,6 +14,7 @@ public:
 	virtual void Save(CArchive& ar);
 
 	virtual int HitTest(const Gdiplus::Point& point) override;
+
 private:
 };
 
