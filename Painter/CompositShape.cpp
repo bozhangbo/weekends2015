@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CompositShape.h"
+#include <iterator>
 
 using namespace Gdiplus;
 
@@ -111,4 +112,9 @@ void CCompositShape::UpdateRelativePostions()
 		_relative_postions[i].Width = child_rect.Width / REAL(_rect.Width);
 		_relative_postions[i].Height = child_rect.Height / REAL(_rect.Height);
 	}
+}
+
+void CCompositShape::Ungroup(std::vector<std::shared_ptr<CShape>>& parent_container)
+{
+	copy(_children.begin(), _children.end(), back_inserter(parent_container));
 }

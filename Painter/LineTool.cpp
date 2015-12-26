@@ -50,8 +50,13 @@ std::shared_ptr<CShape> CLineTool::GetShape()
 }
 
 bool CLineTool::OnLButtonUp(UINT nFlags, CPoint point)
+
 {
+	
 	s_shape_user->AddShape(_line);
+	
 
 	return false;
+
+	
 }

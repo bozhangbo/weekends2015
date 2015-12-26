@@ -126,3 +126,23 @@ void CPolygon::OnSetRect()
 	}
 }
 
+void CPolygon::OnEndMove()
+{
+	if (_rect.Width < 0)
+	{
+		for (size_t i = 0; i < _relative_points.size(); ++i)
+		{
+			_relative_points[i].X = 1.0 - _relative_points[i].X;
+		}
+	}
+	if (_rect.Height < 0)
+	{
+		for (size_t i = 0; i < _relative_points.size(); ++i)
+		{
+			_relative_points[i].Y = 1.0 - _relative_points[i].Y;
+		}
+	}
+
+	NormalizeRect(_rect);
+}
+

@@ -22,10 +22,14 @@ CRectangle::~CRectangle()
 void CRectangle::Draw(Gdiplus::Graphics& graphics)
 {
 	SolidBrush brush(GetFillColor());
-	graphics.FillRectangle(&brush, _rect);
+
+	Rect rect(_rect);
+	NormalizeRect(rect);
+
+	graphics.FillRectangle(&brush, rect);
 
 	Pen pen(_border_color, 5);
-	graphics.DrawRectangle(&pen, _rect);
+	graphics.DrawRectangle(&pen, rect);
 
 	DrawBorder(graphics);
 }

@@ -123,24 +123,41 @@ bool CShape::IsSelected() const
 	return _selected;
 }
 
+void CShape::NormalizeRect(Gdiplus::Rect& rect)
+{
+	if (rect.Width < 0)
+	{
+		rect.X += rect.Width;
+		rect.Width = -rect.Width;
+	}
+	if (rect.Height < 0)
+	{
+		rect.Y += rect.Height;
+		rect.Height = -rect.Height;
+	}
+}
+
 void CShape::DrawBorder(Gdiplus::Graphics& graphics)
 {
+	Rect rect = _rect;
+	NormalizeRect(rect);
+
 	if (_selected)
 	{
 		Pen pen(Color::Black);
 
-		graphics.DrawRectangle(&pen, _rect);
+		graphics.DrawRectangle(&pen, rect);
 
 		// draw handles
-		DrawHandle(graphics, pen, _rect.GetLeft(), _rect.GetTop());
-		DrawHandle(graphics, pen, _rect.GetRight(), _rect.GetTop());
-		DrawHandle(graphics, pen, _rect.GetRight(), _rect.GetBottom());
-		DrawHandle(graphics, pen, _rect.GetLeft(), _rect.GetBottom());
+		DrawHandle(graphics, pen, rect.GetLeft(), rect.GetTop());
+		DrawHandle(graphics, pen, rect.GetRight(), rect.GetTop());
+		DrawHandle(graphics, pen, rect.GetRight(), rect.GetBottom());
+		DrawHandle(graphics, pen, rect.GetLeft(), rect.GetBottom());
 
-		DrawHandle(graphics, pen, _rect.GetRight(), (_rect.GetTop() + _rect.GetBottom()) / 2);
-		DrawHandle(graphics, pen, _rect.GetLeft(), (_rect.GetTop() + _rect.GetBottom()) / 2);
-		DrawHandle(graphics, pen, (_rect.GetLeft() + _rect.GetRight()) / 2, _rect.GetTop());
-		DrawHandle(graphics, pen, (_rect.GetLeft() + _rect.GetRight()) / 2, _rect.GetBottom());
+		DrawHandle(graphics, pen, rect.GetRight(), (rect.GetTop() + rect.GetBottom()) / 2);
+		DrawHandle(graphics, pen, rect.GetLeft(), (rect.GetTop() + rect.GetBottom()) / 2);
+		DrawHandle(graphics, pen, (rect.GetLeft() + rect.GetRight()) / 2, rect.GetTop());
+		DrawHandle(graphics, pen, (rect.GetLeft() + rect.GetRight()) / 2, rect.GetBottom());
 	}	
 }
 
@@ -202,4 +219,9 @@ void CShape::Move(int handle, int cx, int cy)
 		;
 	}
 	OnSetRect();
+}
+
+void CShape::OnEndMove()
+{
+	NormalizeRect(_rect);
 }

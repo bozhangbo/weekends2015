@@ -67,3 +67,17 @@ std::shared_ptr<CShape> CSelectTool::GetShape()
 {
 	return shared_ptr<CShape>();
 }
+
+bool CSelectTool::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	const auto & shapes = s_shape_user->Shapes();
+	for (auto iter = shapes.begin(); iter != shapes.end(); ++iter)
+	{
+		if ((*iter)->IsSelected())
+		{
+			(*iter)->OnEndMove();
+		}
+	}
+
+	return true;
+}

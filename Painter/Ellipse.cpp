@@ -42,14 +42,12 @@ int CEllipse::HitTest(const Gdiplus::Point& point)
 
 	double ellipse_value = (((point.X - m) / a) * ((point.X - m) / a) + ((point.Y - n) / b) * ((point.Y - n) / b));
 
-	if (ellipse_value == 1 || ellipse_value < 1)
+	if (ellipse_value > 1 &&!_selected)
 	{
-		return true;
+		return HandleNone;
 	}
-	else
-	{
-		return false;
-	}
+
+		return CShape::HitTest(point);
 }
 
 

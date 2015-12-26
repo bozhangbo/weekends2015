@@ -21,6 +21,9 @@ public:
 	unsigned int GetPointCount() const;
 	void SetRect();
 	void Finalize();
+
+	virtual void OnEndMove() override;
+
 private:
 	std::vector<Gdiplus::Point> _points;
 	std::vector<Gdiplus::PointF> _relative_points;

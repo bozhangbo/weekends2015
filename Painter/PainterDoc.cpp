@@ -28,6 +28,8 @@
 #include "Rectangle.h"
 #include "Polygon.h"
 #include "Ellipse.h"
+#include "CompositShape.h"
+#include <iterator>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -183,6 +185,8 @@ void CPainterDoc::Dump(CDumpContext& dc) const
 {
 	CDocument::Dump(dc);
 }
+#endif //_DEBUG
+
 
 const vector<shared_ptr<CShape>>& CPainterDoc::GetShapes() const
 {
@@ -199,8 +203,54 @@ void CPainterDoc::AddShape(shared_ptr<CShape> shape)
 	_shapes.push_back(shape);
 }
 
+bool CPainterDoc::Group()
+{
+	shared_ptr<CCompositShape> composite(new CCompositShape);
 
-#endif //_DEBUG
+	for (auto iter = _shapes.begin(); iter != _shapes.end();)
+	{
+		if ((*iter)->IsSelected())
+		{
+			(*iter)->Select(false);
+			composite->AddShape(*iter);
+			iter = _shapes.erase(iter);
+		}
+		else
+		{
+			++iter;
+		}
+	}
+	composite->UpdateRelativePostions();
+	composite->Select(true);
+	_shapes.push_back(composite);
 
+	return true;
+}
 
+bool CPainterDoc::Ungroup()
+{
+	vector<shared_ptr<CShape>> shapes_collected;
+	for (auto iter = _shapes.begin(); iter != _shapes.end(); )
+	{
+		if ((*iter)->IsSelected())
+		{
+			CCompositShape * composite = dynamic_cast<CCompositShape*>((*iter).get());
+			if (composite != nullptr)
+			{
+				composite->Ungroup(shapes_collected);
+				iter = _shapes.erase(iter);
+				continue;
+			}
+		}
+		
+		++iter;
+	}
+	for (auto shape : shapes_collected)
+	{
+		shape->Select(true);
+	}
+	copy(shapes_collected.begin(), shapes_collected.end(), back_inserter(_shapes));
+
+	return true;
+}
 // CPainterDoc commands
