@@ -25,6 +25,7 @@ public:
 	virtual void Draw(Gdiplus::Graphics& graphics);
 	virtual void Save(CArchive& ar);
 	virtual void Load(CArchive& ar);
+	virtual void OnSetRect();
 
 	virtual int HitTest(const Gdiplus::Point& point) override;
 
