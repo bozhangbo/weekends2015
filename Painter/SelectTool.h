@@ -12,6 +12,8 @@ public:
 
 	virtual std::shared_ptr<CShape> GetShape() override;
 
+	virtual bool OnLButtonUp(UINT nFlags, CPoint point) override;
+
 private:
 	CPoint _last_point;
 	int _handle_hit;

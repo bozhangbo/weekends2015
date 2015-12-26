@@ -33,6 +33,7 @@ public:
 	virtual void Load(CArchive& ar);
 	virtual int HitTest(const Gdiplus::Point& point);
 	virtual void Move(int handle_to_move, int cx, int cy);
+	virtual void OnEndMove();
 	virtual void OnSetRect(){}
 
 	void SetRect(const Gdiplus::Rect& rect);
@@ -48,6 +49,7 @@ protected:
 	void DrawBorder(Gdiplus::Graphics& graphics);
 	void DrawHandle(Gdiplus::Graphics& graphics, Gdiplus::Pen&pen, INT x, INT y);
 	bool HandleTest(const Gdiplus::Point& center, const Gdiplus::Point& point);
+	void NormalizeRect(Gdiplus::Rect& rect);
 
 	Gdiplus::Rect _rect;
 	Gdiplus::Color _border_color;
