@@ -29,6 +29,8 @@ bool CSelectTool::OnLButtonDown(UINT nFlags, CPoint point)
 			(*iter)->Select(true);
 			_handle_hit = handle;
 			object_selected = true;
+
+			break;
 		}
 		else if ((nFlags & MK_CONTROL) != MK_CONTROL)
 		{

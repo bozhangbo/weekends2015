@@ -37,7 +37,7 @@ public:
 	virtual void Serialize(CArchive& ar);
 	bool Group();
 	bool Ungroup();
-
+	bool Cut();
 #ifdef SHARED_HANDLERS
 	virtual void InitializeSearchContent();
 	virtual void OnDrawThumbnail(CDC& dc, LPRECT lprcBounds);

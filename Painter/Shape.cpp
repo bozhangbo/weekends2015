@@ -158,6 +158,8 @@ void CShape::DrawBorder(Gdiplus::Graphics& graphics)
 		DrawHandle(graphics, pen, rect.GetLeft(), (rect.GetTop() + rect.GetBottom()) / 2);
 		DrawHandle(graphics, pen, (rect.GetLeft() + rect.GetRight()) / 2, rect.GetTop());
 		DrawHandle(graphics, pen, (rect.GetLeft() + rect.GetRight()) / 2, rect.GetBottom());
+
+		
 	}	
 }
 
@@ -215,6 +217,7 @@ void CShape::Move(int handle, int cx, int cy)
 		_rect.Width += cx;
 		_rect.Height += cy;
 		break;
+
 	default:
 		;
 	}

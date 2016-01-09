@@ -21,6 +21,7 @@ const int HandleMiddleRight = 7;
 const int HandleBottomLeft = 8;
 const int HandleBottomMiddle = 9;
 const int HandleBottomRight = 10;
+const int HandlePoint = 11;
 
 class CShape
 {
@@ -35,6 +36,7 @@ public:
 	virtual void Move(int handle_to_move, int cx, int cy);
 	virtual void OnEndMove();
 	virtual void OnSetRect(){}
+	
 
 	void SetRect(const Gdiplus::Rect& rect);
 	const Gdiplus::Rect& GetRect() const;
@@ -46,7 +48,7 @@ public:
 	bool IsSelected() const;
 
 protected:
-	void DrawBorder(Gdiplus::Graphics& graphics);
+	virtual void DrawBorder(Gdiplus::Graphics& graphics);
 	void DrawHandle(Gdiplus::Graphics& graphics, Gdiplus::Pen&pen, INT x, INT y);
 	bool HandleTest(const Gdiplus::Point& center, const Gdiplus::Point& point);
 	void NormalizeRect(Gdiplus::Rect& rect);
